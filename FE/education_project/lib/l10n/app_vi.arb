@@ -1,0 +1,30 @@
+{
+  "languages_title": "Chọn ngôn ngữ",
+  "languages_description": "Bạn có thể chọn ngôn ngữ hiển thị",
+  "languages_vn": "Tiếng việt",
+  "languages_en": "Tiếng anh",
+  "languages_btn": "Tiếp tục",
+
+  "onboarding_skip": "Bỏ qua",
+  "onboarding_continue": "Tiếp tục",
+  "onboarding_start": "Bắt đầu",
+
+  "intro1_title": "Học thông minh cùng ABCD",
+  "intro1_description": "Trải nghiệm luyện Speaking - Writing ảo, chấm chữa bài và phân tích sự tiến bộ nhờ công nghệ AI tiên tiến",
+  "intro2_title": "Cá nhân hoá lộ trình",
+  "intro2_description": "Ôn luyện chủ động, lộ trình thiết kế phù hợp với khả năng và nhu cầu của riêng bạn",
+  "intro3_title": "Chấm chữa tận tâm",
+  "intro3_description": "Giải quyết những lỗi trọng tâm nhanh chóng, hiệu quả cùng đội ngũ giáo viên giàu kinh nghiệm",
+
+  "welcome_title": "Tham gia ngay cùng ABCD - Nền tảng học và luyện thi thông minh",
+  "welcome_login": "Đăng nhập",
+  "welcome_register": "Đăng ký",
+  "welcome_span1": "Bằng cách tham gia, chúng tôi xác nhận bạn đã đọc và đồng ý với ",
+  "welcome_span2": "Điều kiện & Điều khoản ",
+  "welcome_span3": "cùng ",
+  "welcome_span4": "Chính sách bảo mật thông tin của ",
+  "welcome_span5": "của ABCD"
+
+
+
+}

@@ -1,0 +1,27 @@
+{
+  "languages_title": "Select language",
+  "languages_description": "You can choose the display language",
+  "languages_vn": "Vietnamese",
+  "languages_en": "English",
+  "languages_btn": "Continue",
+
+  "onboarding_skip": "Skip",
+  "onboarding_continue": "Continue",
+  "onboarding_start": "Start",
+
+  "intro1_title": "Learn Smart with ABCD",
+  "intro1_description": "Experience AI-powered virtual Speaking - Writing practice, receive detailed corrections, and track your progress with advanced technology",
+  "intro2_title": "Personalized Learning Path",
+  "intro2_description": "Proactive practice, with a learning path tailored to your abilities and specific needs",
+  "intro3_title": "Dedicated Feedback",
+  "intro3_description": "Quickly and effectively address key mistakes with our experienced teaching team",
+
+  "welcome_title": "Join now with ABCD - The intelligent learning and exam preparation platform",
+  "welcome_login": "Login",
+  "welcome_register": "Register",
+  "welcome_span1": "By joining, we confirm that you have read and agreed to the ",
+  "welcome_span2": "Terms & Conditions ",
+  "welcome_span3": "and ",
+  "welcome_span4": "Privacy Policy of ",
+  "welcome_span5": "ABCD"
+}
