@@ -1,7 +1,8 @@
 import 'package:education_project/pages/choose_language.dart';
+import 'package:education_project/pages/home.dart';
 import 'package:education_project/pages/loading.dart';
 import 'package:education_project/pages/intro/onboarding.dart';
-import 'package:education_project/pages/login.dart';
+import 'package:education_project/pages/login/login.dart';
 import 'package:education_project/pages/welcome.dart';
 import 'package:education_project/providers/locale_provider.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +11,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 void main() {
-  runApp(ProviderScope(child: MyApp()));
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends ConsumerWidget {
@@ -39,6 +40,8 @@ class MyApp extends ConsumerWidget {
         '/boarding': (context) => const Onboarding(),
         '/welcome': (context) => const Welcome(),
         '/login': (context) => const Login(),
+        '/home': (context) => const Home(),
+
       },
     );
   }
