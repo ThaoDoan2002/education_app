@@ -13,6 +13,7 @@ class _LoginState extends State<Login> {
   final _formKey = GlobalKey<FormState>();
   final FocusNode _phoneFocusNode = FocusNode();
   final FocusNode _passwordFocusNode = FocusNode();
+
   final FocusNode _usernameFocusNode = FocusNode();
 
   final TextEditingController _phoneController = TextEditingController();
@@ -60,17 +61,18 @@ class _LoginState extends State<Login> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
+        surfaceTintColor: Colors.white,
         centerTitle: true,
         title: Image.asset(
-          'assets/my_logo/my_logo.jpg',
-          height: 200,
-          width: 100,
+          'assets/welcome/star.png',
+          height: 73,
+          width: 75,
         ),
       ),
       body: SingleChildScrollView(
         //  nội dung có thể cuộn
         child: Container(
-          margin: EdgeInsets.only(top: 45, left: 30, right: 30),
+          margin: EdgeInsets.only(top: 45, left: 20, right: 20),
           child: !loginWithUsername
               ? Form(
                   key: _formKey,
@@ -164,9 +166,27 @@ class _LoginState extends State<Login> {
                       ),
 
                       if (isPassed) ...[
-                        const Text(
-                          'Mật khẩu',
-                          style: TextStyle(fontSize: 16),
+                        SizedBox(
+                          height: 12,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              'Mật khẩu',
+                              style: TextStyle(fontSize: 16),
+                            ),
+                            GestureDetector(
+                              onTap: () {}, //doing....
+                              child: Text(
+                                'Quên mật khẩu?',
+                                style: TextStyle(
+                                    color: Colors.blueAccent,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16),
+                              ),
+                            )
+                          ],
                         ),
                         const SizedBox(
                           height: 8,
@@ -326,10 +346,10 @@ class _LoginState extends State<Login> {
                                       if (enteredPassword != correctPassword) {
                                         errorMessage = 'Mật khẩu không đúng';
                                       } else {
+                                        errorMessage = null;
                                         Navigator.pushReplacementNamed(
                                             context, '/home');
                                       }
-                                      // Đưa focus trở lại trường nhập số điện thoại
                                       FocusScope.of(context)
                                           .requestFocus(_passwordFocusNode);
 
@@ -450,7 +470,7 @@ class _LoginState extends State<Login> {
                         child: RichText(
                           text: TextSpan(
                             style: TextStyle(
-                                fontSize: 14,
+                                fontSize: 15,
                                 color: Colors.blueAccent,
                                 fontWeight: FontWeight.bold),
                             children: [
@@ -469,7 +489,7 @@ class _LoginState extends State<Login> {
                                         Text(
                                           'Username',
                                           style: TextStyle(
-                                              fontSize: 14,
+                                              fontSize: 15,
                                               color: Colors.blueAccent,
                                               fontWeight: FontWeight.bold),
                                         )
@@ -478,6 +498,10 @@ class _LoginState extends State<Login> {
                                   ),
                                   onTap: () {
                                     setState(() {
+                                      FocusScope.of(context)
+                                          .requestFocus(FocusNode());
+                                      _passwordController.clear();
+                                      errorMessage = null;
                                       loginWithUsername = true;
                                     });
                                   },
@@ -558,6 +582,117 @@ class _LoginState extends State<Login> {
                               : Colors.black, // Màu chữ input khi loading
                         ),
                       ),
+                      SizedBox(
+                        height: 12,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            'Mật khẩu',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                          GestureDetector(
+                            onTap: () {}, //doing....
+                            child: Text(
+                              'Quên mật khẩu?',
+                              style: TextStyle(
+                                  color: Colors.blueAccent,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16),
+                            ),
+                          )
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 8,
+                      ),
+                      TextFormField(
+                        onChanged: (password) {
+                          enteredPassword = password;
+                        },
+                        obscureText: isOsecured,
+                        focusNode: _passwordFocusNode,
+                        controller: _passwordController,
+                        decoration: InputDecoration(
+                          suffixIcon: SizedBox(
+                            width: _passwordController.text.isEmpty ? 10 : 105,
+                            // Đặt kích thước tùy ý phù hợp với giao diện của bạn
+                            child: Row(
+                              children: [
+                                IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      isOsecured = !isOsecured;
+                                    });
+                                  },
+                                  icon: isOsecured
+                                      ? const Icon(
+                                          Icons.visibility,
+                                          color: Colors.grey,
+                                        )
+                                      : const Icon(
+                                          Icons.visibility_off,
+                                          color: Colors.grey,
+                                        ),
+                                ),
+                                if (_passwordController.text.isNotEmpty) ...[
+                                  Container(
+                                    width: 2,
+                                    height: 20,
+                                    color: Colors.grey,
+                                  ),
+                                  IconButton(
+                                    onPressed: () {
+                                      enteredPassword = '';
+                                      _passwordController.clear();
+                                    },
+                                    icon: const Icon(
+                                      Icons.cancel,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ]
+                              ],
+                            ),
+                          ),
+                          filled: true,
+                          fillColor:
+                              isLoading ? Colors.grey[200] : Colors.white12,
+                          hintText: 'Nhập mật khẩu',
+                          labelText: 'Nhập mật khẩu',
+                          counterText: '',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                            borderSide: BorderSide(
+                              color: Colors.grey,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(
+                              color: isLoading ? Colors.grey : Colors.blue,
+                              // Màu viền khi loading
+                              width: 1.5,
+                            ),
+                          ),
+                          hintStyle: TextStyle(
+                            color: isLoading ? Colors.grey : Colors.black,
+                            // Màu chữ khi loading
+                            fontSize: 17,
+                          ),
+                          floatingLabelBehavior: FloatingLabelBehavior.never,
+                        ),
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: isLoading
+                              ? Colors.grey
+                              : Colors.black, // Màu chữ input khi loading
+                        ),
+                      ),
+                      SizedBox(
+                        height: 12,
+                      ),
 
                       if (errorMessage != null && !isLoading)
                         Container(
@@ -606,6 +741,11 @@ class _LoginState extends State<Login> {
                               errorMessage = 'Vui lòng nhập Username';
                             });
                             return;
+                          } else if (enteredPassword.isEmpty) {
+                            setState(() {
+                              errorMessage = 'Vui lòng nhập mật khẩu';
+                            });
+                            return;
                           }
 
                           if (!isLoading) {
@@ -621,13 +761,19 @@ class _LoginState extends State<Login> {
                             Future.delayed(Duration(seconds: 2), () {
                               setState(() {
                                 // Kiểm tra số điện thoại
-                                if (enteredUsername != correctUsername) {
-                                  errorMessage = 'Username không đúng';
+                                if (enteredUsername != correctUsername &&
+                                    enteredPassword != correctPassword) {
+                                  errorMessage =
+                                      'Username và mật khẩu không đúng';
+                                } else if (enteredUsername != correctUsername ||
+                                    enteredPassword != correctPassword) {
+                                  errorMessage =
+                                      'Username hoặc mật khẩu không đúng';
                                 } else {
+                                  errorMessage = null;
                                   Navigator.pushReplacementNamed(
                                       context, '/home');
                                 }
-                                // Đưa focus trở lại trường nhập số điện thoại
                                 FocusScope.of(context)
                                     .requestFocus(_usernameFocusNode);
 
@@ -669,7 +815,7 @@ class _LoginState extends State<Login> {
                         child: RichText(
                           text: TextSpan(
                             style: TextStyle(
-                                fontSize: 14,
+                                fontSize: 15,
                                 color: Colors.blueAccent,
                                 fontWeight: FontWeight.bold),
                             children: [
@@ -677,53 +823,64 @@ class _LoginState extends State<Login> {
                               WidgetSpan(
                                 alignment: PlaceholderAlignment.baseline,
                                 baseline: TextBaseline.alphabetic,
-                                child:loginWithUsername? GestureDetector(
-                                  child: const IntrinsicWidth(
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          Icons.phone,
-                                          color: Colors.blueAccent,
+                                child: loginWithUsername
+                                    ? GestureDetector(
+                                        child: const IntrinsicWidth(
+                                          child: Row(
+                                            children: [
+                                              Icon(
+                                                Icons.phone,
+                                                color: Colors.blueAccent,
+                                              ),
+                                              Text(
+                                                'số điện thoại',
+                                                style: TextStyle(
+                                                    fontSize: 15,
+                                                    color: Colors.blueAccent,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              )
+                                            ],
+                                          ),
                                         ),
-                                        Text(
-                                          'số điện thoại',
-                                          style: TextStyle(
-                                              fontSize: 14,
-                                              color: Colors.blueAccent,
-                                              fontWeight: FontWeight.bold),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                  onTap: () {
-                                    setState(() {
-                                      loginWithUsername = false;
-                                    });
-                                  },
-                                ):GestureDetector(
-                                  child: IntrinsicWidth(
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          Icons.person,
-                                          color: Colors.blueAccent,
+                                        onTap: () {
+                                          setState(() {
+                                            FocusScope.of(context)
+                                                .requestFocus(FocusNode());
+                                            isPassed = false;
+                                            _phoneController.clear();
+                                            errorMessage = null;
+                                            _passwordController.clear();
+                                            loginWithUsername = false;
+                                          });
+                                        },
+                                      )
+                                    : GestureDetector(
+                                        child: IntrinsicWidth(
+                                          child: Row(
+                                            children: [
+                                              Icon(
+                                                Icons.person,
+                                                color: Colors.blueAccent,
+                                              ),
+                                              Text(
+                                                'Username',
+                                                style: TextStyle(
+                                                    fontSize: 15,
+                                                    color: Colors.blueAccent,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              )
+                                            ],
+                                          ),
                                         ),
-                                        Text(
-                                          'Username',
-                                          style: TextStyle(
-                                              fontSize: 15,
-                                              color: Colors.blueAccent,
-                                              fontWeight: FontWeight.bold),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                  onTap: () {
-                                    setState(() {
-                                      loginWithUsername = true;
-                                    });
-                                  },
-                                ),
+                                        onTap: () {
+                                          setState(() {
+                                            errorMessage = null;
+                                            loginWithUsername = true;
+                                          });
+                                        },
+                                      ),
                               ),
                             ],
                           ),
