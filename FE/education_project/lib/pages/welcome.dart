@@ -158,14 +158,7 @@ class _WelcomeState extends State<Welcome> with SingleTickerProviderStateMixin {
                         height: 150,
                         child: Image.asset('assets/welcome/star.png'),
                       ),
-                      Container(
-                        margin: EdgeInsets.only(bottom: 200),
-                        child: Text('LOGO',
-                            style: TextStyle(
-                                fontSize: 25,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white)),
-                      )
+
                     ]),
                   ),
                   SizeTransition(
@@ -211,7 +204,9 @@ class _WelcomeState extends State<Welcome> with SingleTickerProviderStateMixin {
                                   color: Colors.blueAccent,
                                 ),
                               ),
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.pushNamed(context, '/register');
+                              },
                               child: Text(
                                 AppLocalizations.of(context)!.welcome_register,
                                 style: TextStyle(

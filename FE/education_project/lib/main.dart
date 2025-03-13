@@ -3,15 +3,21 @@ import 'package:education_project/pages/home.dart';
 import 'package:education_project/pages/loading.dart';
 import 'package:education_project/pages/intro/onboarding.dart';
 import 'package:education_project/pages/login/login.dart';
+import 'package:education_project/pages/register/confirmOTP.dart';
+import 'package:education_project/pages/register/register.dart';
 import 'package:education_project/pages/welcome.dart';
 import 'package:education_project/providers/locale_provider.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding
+      .ensureInitialized(); // Đảm bảo mọi thứ được khởi tạo đúng
+  await Firebase.initializeApp();
   runApp(const ProviderScope(child: MyApp()));
 }
 
@@ -41,8 +47,8 @@ class MyApp extends ConsumerWidget {
         '/boarding': (context) => const Onboarding(),
         '/welcome': (context) => const Welcome(),
         '/login': (context) => const Login(),
+        '/register': (context) => const Register(),
         '/home': (context) => const Home(),
-
       },
     );
   }

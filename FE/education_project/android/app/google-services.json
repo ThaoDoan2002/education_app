@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "715527768351",
+    "project_id": "fire-setup-8f873",
+    "storage_bucket": "fire-setup-8f873.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:715527768351:android:ef02785abb2c1d05ff482a",
+        "android_client_info": {
+          "package_name": "com.dtt.education_project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-cbQLVI5dXsfxGCEdRvBhiV6aAY2ov3E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:715527768351:android:0f30c6c40d4aab7fff482a",
+        "android_client_info": {
+          "package_name": "com.dtt.login_register_otp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-cbQLVI5dXsfxGCEdRvBhiV6aAY2ov3E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
