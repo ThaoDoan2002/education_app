@@ -1,0 +1,48 @@
+
+
+services:
+  db:
+    image: mysql:8
+    environment:
+      MYSQL_DATABASE: ${DATABASE_NAME}
+      MYSQL_ROOT_PASSWORD: ${DATABASE_ROOT_PASSWORD}
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    env_file:
+      - .env.prod
+
+  django-web:
+    build: .
+    container_name: django-docker
+    ports:
+      - "80:8000"
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - ./temp_dir:/app/temp_dir
+    env_file:
+      - .env.prod
+
+  redis:
+    image: redis:7
+    container_name: redis
+    ports:
+      - "6379:6379"
+
+  celery-worker:
+    build: .
+    container_name: celery-worker
+    command: celery -A courseapp worker --loglevel=info
+    depends_on:
+      - redis
+      - django-web
+    env_file:
+      - .env.prod
+    volumes:
+      - ./temp_dir:/app/temp_dir
+
+volumes:
+  mysql_data:
