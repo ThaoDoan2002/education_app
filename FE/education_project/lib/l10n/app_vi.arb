@@ -19,11 +19,26 @@
   "welcome_title": "Tham gia ngay cùng ABCD - Nền tảng học và luyện thi thông minh",
   "welcome_login": "Đăng nhập",
   "welcome_register": "Đăng ký",
+  "welcome_google": "Tiếp tục với Google",
   "welcome_span1": "Bằng cách tham gia, chúng tôi xác nhận bạn đã đọc và đồng ý với ",
   "welcome_span2": "Điều kiện & Điều khoản ",
   "welcome_span3": "cùng ",
   "welcome_span4": "Chính sách bảo mật thông tin của ",
-  "welcome_span5": "của ABCD"
+  "welcome_span5": "của ABCD",
+
+  "login_text_phone": "Số điện thoại",
+  "login_hint_phone": "Nhập số điện thoại",
+  "login_invalid_phone": "Số điện thoại không hợp lệ!",
+  "login_signin_btn": "Đăng nhập",
+  "login_continue_btn": "Tiếp tục",
+  "login_username": "Tên đăng nhập",
+  "login_hint_username": "Nhập tên đăng nhập",
+  "login_gesture_phone": "số điện thoại",
+  "login_password": "Mật khẩu",
+  "login_invalid_password": "Vui lòng nhập password!",
+  "login_hint_password": "Nhập mật khẩu",
+  "login_forgot_password": "Quên mật khẩu?",
+  "login_method_text": "Nhấn để đăng nhập bằng "
 
 
 

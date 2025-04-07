@@ -19,9 +19,25 @@
   "welcome_title": "Join now with ABCD - The intelligent learning and exam preparation platform",
   "welcome_login": "Login",
   "welcome_register": "Register",
+  "welcome_google": "Continue with Google",
   "welcome_span1": "By joining, we confirm that you have read and agreed to the ",
   "welcome_span2": "Terms & Conditions ",
   "welcome_span3": "and ",
   "welcome_span4": "Privacy Policy of ",
-  "welcome_span5": "ABCD"
+  "welcome_span5": "ABCD",
+
+  "login_text_phone": "Phone number",
+  "login_hint_phone": "Enter phone number",
+  "login_invalid_phone": "Invalid phone number!",
+  "login_signin_btn": "Sign in",
+  "login_continue_btn": "Continue",
+  "login_username": "Username",
+  "login_hint_username": "Enter username",
+  "login_gesture_phone": "phone number",
+  "login_password": "Password",
+  "login_invalid_password": "Please enter password!",
+  "login_hint_password": "Enter password",
+  "login_forgot_password": "Forgot password?",
+  "login_method_text": "Tap to login with "
+
 }

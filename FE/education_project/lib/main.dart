@@ -1,18 +1,20 @@
-import 'package:education_project/pages/choose_language.dart';
+import 'package:education_project/features/choose_language/presentation/pages/choose_language.dart';
 import 'package:education_project/pages/home.dart';
+import 'package:education_project/pages/home_login.dart';
 import 'package:education_project/pages/loading.dart';
-import 'package:education_project/pages/intro/onboarding.dart';
-import 'package:education_project/pages/login/login.dart';
-import 'package:education_project/pages/register/confirmOTP.dart';
-import 'package:education_project/pages/register/register.dart';
-import 'package:education_project/pages/welcome.dart';
-import 'package:education_project/providers/locale_provider.dart';
+import 'package:education_project/pages/sign_up/sign_up.dart';
+import 'package:education_project/features/welcome/presentation/pages/welcome.dart';
+import 'package:education_project/features/choose_language/presentation/provider/locale_provider.dart';
+import 'package:education_project/pages/test_get_user.dart';
+import 'package:education_project/pages/test_login.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'features/intro/presentation/pages/onboarding.dart';
+import 'features/login/presentation/pages/login.dart';
 
 void main() async {
   WidgetsFlutterBinding
@@ -47,8 +49,9 @@ class MyApp extends ConsumerWidget {
         '/boarding': (context) => const Onboarding(),
         '/welcome': (context) => const Welcome(),
         '/login': (context) => const Login(),
-        '/register': (context) => const Register(),
+        '/signup': (context) => const SignUp(),
         '/home': (context) => const Home(),
+        '/home_login': (context) => const LoginHome(),
       },
     );
   }

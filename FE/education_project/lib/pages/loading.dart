@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Loading extends StatefulWidget {
@@ -31,11 +32,8 @@ class _LoadingState extends State<Loading> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.blue[600],
-        body: const Center(
-            child: SpinKitPouringHourGlassRefined(
-          color: Colors.white,
-          size: 90.0,
-        )));
+        backgroundColor: Colors.white,
+        body:  Center(
+            child: Lottie.asset("assets/animations/person.json")));
   }
 }
