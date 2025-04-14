@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../provider/locale_provider.dart';
 import '../widgets/button_widget.dart';
@@ -87,8 +88,8 @@ class _ChooseLanguageState extends ConsumerState<ChooseLanguage> {
             child: ButtonBlue(
               text: AppLocalizations.of(context)!.languages_btn,
               my_function: () {
-                Navigator.pushReplacementNamed(context, '/boarding');
-              },
+                context.go('/boarding');
+                },
             ),
           ),
         ),

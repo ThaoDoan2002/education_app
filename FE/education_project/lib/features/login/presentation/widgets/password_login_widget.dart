@@ -1,5 +1,7 @@
+import 'package:education_project/config/routes/app_routers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:go_router/go_router.dart';
 
 class TextPass extends StatelessWidget {
   const TextPass({super.key});
@@ -15,8 +17,8 @@ class TextPass extends StatelessWidget {
         ),
         GestureDetector(
           onTap: () {
-            print("DOING");
-          }, //doing....
+            context.push('/forgot_password');
+          },
           child: Text(
             AppLocalizations.of(context)!.login_forgot_password,
             style: TextStyle(

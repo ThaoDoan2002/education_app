@@ -134,6 +134,7 @@ class _LoginState extends ConsumerState<Login> {
                       : Colors.black, // Màu chữ input khi loading
                 ),
               ),
+
               SizedBox(
                 height: 12,
               ),
@@ -237,7 +238,7 @@ class _LoginState extends ConsumerState<Login> {
               const SizedBox(
                 height: 12,
               ),
-              ButtonLogin(
+              ButtonBlue2(
                   isLoad: isLoad,
                   function: () async {
                     if (enteredUsername.isEmpty) {
@@ -260,7 +261,7 @@ class _LoginState extends ConsumerState<Login> {
                     }
 
                     // Tạo đối tượng params cho login
-                    LoginParams params = LoginParams(
+                    LoginBodyParams params = LoginBodyParams(
                       username: enteredUsername,
                       password: enteredPassword,
                     );

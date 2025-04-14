@@ -38,6 +38,25 @@
   "login_invalid_password": "Please enter password!",
   "login_hint_password": "Enter password",
   "login_forgot_password": "Forgot password?",
-  "login_method_text": "Tap to login with "
+  "login_method_text": "Tap to login with ",
+
+  "forgot_pass_title": "Forget password",
+  "forgot_pass_desc": "Please enter your email address",
+  "forgot_pass_input_email": "Enter email",
+  "forgot_pass_error_empty": "Please enter your email!",
+  "forgot_pass_error_invalid": "Invalid email!",
+  "forgot_pass_btn_submit": "Submit",
+  "forgot_pass_btn_resend": "Resend email",
+
+  "reset_pass_title": "Reset password",
+  "reset_pass_desc": "Please enter your new password",
+  "reset_pass_input_pass": "Enter password",
+  "reset_pass_error_empty": "Please enter your password!",
+  "reset_pass_input_repass": "Enter re-password",
+  "reset_pass_error_re_empty": "Please enter your re-password!",
+  "reset_pass_btn_submit": "Submit"
+
+
+
 
 }

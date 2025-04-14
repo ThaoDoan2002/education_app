@@ -38,8 +38,23 @@
   "login_invalid_password": "Vui lòng nhập password!",
   "login_hint_password": "Nhập mật khẩu",
   "login_forgot_password": "Quên mật khẩu?",
-  "login_method_text": "Nhấn để đăng nhập bằng "
+  "login_method_text": "Nhấn để đăng nhập bằng ",
 
+    "forgot_pass_title": "Quên mật khẩu",
+    "forgot_pass_desc": "Vui lòng nhập địa chỉ email của bạn",
+    "forgot_pass_input_email": "Nhập email",
+    "forgot_pass_error_empty": "Vui lòng nhập email!",
+    "forgot_pass_error_invalid": "Email không hợp lệ!",
+    "forgot_pass_btn_submit": "Gửi",
+    "forgot_pass_btn_resend": "Gửi lại email",
+
+    "reset_pass_title": "Đặt lại mật khẩu",
+    "reset_pass_desc": "Vui lòng nhập mật khẩu mới của bạn",
+    "reset_pass_input_pass": "Nhập mật khẩu",
+    "reset_pass_error_empty": "Vui lòng nhập mật khẩu!",
+    "reset_pass_input_repass": "Nhập lại mật khẩu",
+    "reset_pass_error_re_empty": "Vui lòng nhập lại mật khẩu!",
+    "reset_pass_btn_submit": "Gửi"
 
 
 }
