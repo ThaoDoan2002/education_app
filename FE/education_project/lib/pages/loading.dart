@@ -35,9 +35,6 @@ class _LoadingState extends State<Loading> {
     checkStatus();
   }
 
-
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

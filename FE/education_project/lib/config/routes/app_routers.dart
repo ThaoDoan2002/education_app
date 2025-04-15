@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import '../../features/choose_language/presentation/pages/choose_language.dart';
 import '../../features/forget_password/presentation/pages/forgot_password.dart';
 import '../../features/forget_password/presentation/pages/reset_password.dart';
+import '../../features/home/presentation/home.dart';
 import '../../features/intro/presentation/pages/onboarding.dart';
 import '../../features/login/presentation/pages/login.dart';
 import '../../features/register/presentation/pages/register.dart';
@@ -16,7 +17,7 @@ final GoRouter appRouter = GoRouter(
   routes: [
     GoRoute(
       path: '/',
-      builder: (context, state) => const Loading(),
+      builder: (context, state) => const Home(),
     ),
     GoRoute(
       path: '/languages',
@@ -46,10 +47,7 @@ final GoRouter appRouter = GoRouter(
       path: '/home',
       builder: (context, state) => const Home(),
     ),
-    GoRoute(
-      path: '/home_login',
-      builder: (context, state) => const LoginHome(),
-    ),
+
     GoRoute(
       path: '/reset-password',
       name: 'reset-password',
