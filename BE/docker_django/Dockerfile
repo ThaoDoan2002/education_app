@@ -31,9 +31,4 @@ COPY . /app/
 # Expose the Django port
 EXPOSE 8000
  
-#CMD ["python", "-m", "gunicorn", "--bind", "0.0.0.0:8000", "--workers", "3", "courseapp.wsgi:application"]
-# Make entry file executable
-RUN chmod +x  /app/entrypoint.prod.sh
-
-# Start the application using Gunicorn
-CMD ["/app/entrypoint.prod.sh"]
+CMD ["gunicorn", "--workers=3", "--bind", "unix:/app/gunicorn_socket/gunicorn.sock", "courseapp.wsgi:application"]

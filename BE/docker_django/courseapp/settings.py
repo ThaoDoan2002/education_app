@@ -13,8 +13,10 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 import os
 from dotenv import load_dotenv
+import firebase_admin
+from firebase_admin import credentials
 
-load_dotenv('.env.local')
+load_dotenv('.env')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -50,6 +52,10 @@ INSTALLED_APPS = [
     'import_export',
 ]
 
+URL='https://aa4e-14-226-227-175.ngrok-free.app'
+FIREBASE_API_KEY='AIzaSyC-cbQLVI5dXsfxGCEdRvBhiV6aAY2ov3E'
+
+
 CORS_ALLOW_ALL_ORIGINS = True
 # ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '192.168.61.1', 'af38-14-226-227-112.ngrok-free.app']
 
@@ -62,6 +68,7 @@ REST_FRAMEWORK = {
         'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
     )
 }
+
 
 FILE_UPLOAD_MAX_MEMORY_SIZE = 524288000
 
@@ -81,7 +88,6 @@ CKEDITOR_UPLOAD_PATH = "ckeditor/images/"
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
-    "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',  # multiple language
     'django.middleware.common.CommonMiddleware',
@@ -183,10 +189,10 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
-    BASE_DIR / 'statifiles'
+    BASE_DIR / 'static'
 ]
 
-# STATIC_ROOT = BASE_DIR / "staticfiles"
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -344,3 +350,9 @@ JAZZMIN_SETTINGS = {
 JAZZMIN_UI_TWEAKS = {
     "theme": "darkly",
 }
+
+firebase_cred_path = os.path.join(BASE_DIR,'courseapp', 'firebase', 'firebase-adminsdk.json')
+
+if not firebase_admin._apps:
+    cred = credentials.Certificate(firebase_cred_path)
+    firebase_admin.initialize_app(cred)

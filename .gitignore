@@ -25,3 +25,5 @@ doc/api/
 
 .flutter-plugins
 .flutter-plugins-dependencies
+BE/docker_django/courseapp/firebase/firebase-adminsdk.json
+
