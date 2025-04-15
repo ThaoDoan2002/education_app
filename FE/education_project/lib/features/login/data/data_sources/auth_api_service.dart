@@ -1,7 +1,9 @@
 import 'package:education_project/core/constants/constants.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:dio/dio.dart';
+
 part 'auth_api_service.g.dart';
+
 
 @RestApi(baseUrl:BASE_URL)
 abstract class AuthAPIService {
@@ -16,5 +18,6 @@ abstract class AuthAPIService {
       @Field("username") String username,
       @Field("password") String password,
       );
+
 
 }

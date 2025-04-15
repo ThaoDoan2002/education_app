@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-class ButtonLogin extends StatelessWidget {
+class ButtonBlue2 extends StatelessWidget {
   final bool isLoad;
   final VoidCallback function;
   final String text;
-  const ButtonLogin({super.key, required this.isLoad, required this.function, required this.text});
+  const ButtonBlue2({super.key, required this.isLoad, required this.function, required this.text});
 
   @override
   Widget build(BuildContext context) {

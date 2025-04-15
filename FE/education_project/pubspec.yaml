@@ -57,6 +57,13 @@ dependencies:
   retrofit: ^4.4.2
   flutter_secure_storage: ^9.2.4
   lottie: ^3.2.0
+  firebase_dynamic_links:
+  go_router: ^14.8.1
+  flutter_native_splash: ^2.4.4
+  flutter_launcher_icons: ^0.14.3
+  carousel_slider: ^5.0.0
+
+
 
 
 
@@ -93,6 +100,9 @@ flutter:
     - assets/intro/
     - assets/welcome/
     - assets/my_logo/
+    - assets/home/
+
+
 
 
   # An image asset can refer to one or more resolution-specific "variants", see
@@ -120,3 +130,7 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+
+
+

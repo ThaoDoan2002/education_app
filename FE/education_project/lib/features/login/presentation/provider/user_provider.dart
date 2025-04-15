@@ -5,7 +5,7 @@ import 'package:education_project/features/login/presentation/provider/state/use
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../config/storage/token_storage.dart';
-import '../../../../core/resouces/data_state.dart';
+import '../../../../core/resources/data_state.dart';
 import '../../data/data_sources/user_api_service.dart';
 import '../../data/repository_impl/user_repository_impl.dart';
 import '../../domain/repository/user_repository.dart';

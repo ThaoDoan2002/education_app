@@ -49,7 +49,7 @@ class LoginScreen extends ConsumerWidget {
                 : ElevatedButton(
                     onPressed: () async {
                       // Tạo LoginParams từ dữ liệu nhập vào
-                      LoginParams params = LoginParams(
+                      LoginBodyParams params = LoginBodyParams(
                         username: _usernameController.text,
                         password: _passwordController.text,
                       );

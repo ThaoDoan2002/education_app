@@ -3,13 +3,13 @@ import 'package:education_project/features/login/domain/usecases/params/login_pa
 
 import '../repository/auth_repository.dart';
 
-class LoginUseCase implements UseCase<void,LoginParams>{
+class LoginUseCase implements UseCase<void,LoginBodyParams>{
   final AuthRepository _authRepository;
 
   LoginUseCase(this._authRepository);
 
   @override
-  Future<void> call({LoginParams? params}) async {
+  Future<void> call({LoginBodyParams? params}) async {
     try {
       await _authRepository.login(params!);
 

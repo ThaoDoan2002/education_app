@@ -3,21 +3,28 @@ import 'package:education_project/features/welcome/presentation/widgets/box_colo
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:sign_in_button/sign_in_button.dart';
 
+import '../../../../config/storage/token_storage.dart';
 import '../../../choose_language/presentation/widgets/button_widget.dart';
+import '../../../login/domain/usecases/params/login_param.dart';
+import '../../../login/presentation/provider/login_provider.dart';
 
-class Welcome extends StatefulWidget {
+class Welcome extends ConsumerStatefulWidget {
   const Welcome({super.key});
 
   @override
-  State<Welcome> createState() => _WelcomeState();
+  ConsumerState<Welcome> createState() => _WelcomeState();
 }
 
-class _WelcomeState extends State<Welcome> with SingleTickerProviderStateMixin {
+class _WelcomeState extends ConsumerState<Welcome> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final googleProvider = GoogleAuthProvider();
+
   User? _user;
 
   @override
@@ -41,17 +48,7 @@ class _WelcomeState extends State<Welcome> with SingleTickerProviderStateMixin {
     _controller.dispose();
   }
 
-  void _handleLoginWithGoogle() async {
-    try {
-      GoogleAuthProvider _googleAuthProvider = await GoogleAuthProvider();
-      await _auth.signInWithProvider(_googleAuthProvider);
-      if (_user != null) {
-        Navigator.pushReplacementNamed(context, '/home');
-      }
-    } catch (error) {
-      print(error);
-    }
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -153,7 +150,7 @@ class _WelcomeState extends State<Welcome> with SingleTickerProviderStateMixin {
                     ButtonBlue(
                       text: AppLocalizations.of(context)!.welcome_login,
                       my_function: () {
-                        Navigator.pushNamed(context, '/login');
+                        context.push('/login');
                       },
                     ),
                     SizedBox(
@@ -170,7 +167,7 @@ class _WelcomeState extends State<Welcome> with SingleTickerProviderStateMixin {
                           ),
                         ),
                         onPressed: () {
-                          Navigator.pushNamed(context, '/signup');
+                          context.push('/register');
                         },
                         child: Text(
                           AppLocalizations.of(context)!.welcome_register,
@@ -190,9 +187,19 @@ class _WelcomeState extends State<Welcome> with SingleTickerProviderStateMixin {
                           borderRadius: BorderRadius.circular(
                               10.0), // Đặt borderRadius theo ý muốn
                         ),
-                        elevation: 1, onPressed: () {
-                      _handleLoginWithGoogle();
-                    }),
+                        elevation: 1, onPressed: () async {
+                          try {
+                            final userCredential = await _auth.signInWithProvider(googleProvider);
+                            final idToken = await userCredential.user?.getIdToken();
+                            if (idToken != null) {
+                              final params = SocialLoginBodyParams(idToken: idToken);
+                              ref.read(socialLoginNotifierProvider.notifier).socialLogin(params);
+                              context.go('/home');
+                            }
+                          } catch (e) {
+                            print("Error during Google sign-in: $e");
+                          }
+                        }),
                     const SizedBox(
                       height: 35,
                     ),
