@@ -29,7 +29,8 @@ class SocialAuthRepositoryImpl implements SocialAuthRepository {
       await _socialAuthAPIService.socialLogin({"idToken": params.idToken});
       if (httpResponse.response.statusCode == HttpStatus.ok) {
         final token = httpResponse.response.data['access_token'];
-        tokenStorage.saveToken(token);
+        final expires = httpResponse.response.data['expires_in'];
+        tokenStorage.saveToken(token, expires);
       } else {
         throw Exception(
             'Failed to login: ${httpResponse.response.statusMessage}');

@@ -1,31 +1,34 @@
-import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lottie/lottie.dart';
+import '../features/home/presentation/provider/state/get_user_state.dart';
+import '../features/home/presentation/provider/get_user_provider.dart';
+import '../config/storage/token_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../features/forget_password/presentation/pages/reset_password.dart';
-
-class Loading extends StatefulWidget {
+class Loading extends ConsumerStatefulWidget {
   const Loading({super.key});
 
   @override
-  State<Loading> createState() => _LoadingState();
+  _LoadingState createState() => _LoadingState();
 }
 
-class _LoadingState extends State<Loading> {
-
+class _LoadingState extends ConsumerState<Loading> {
   void checkStatus() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final prefs = await SharedPreferences.getInstance();
+    final bool? isOnboardingCompleted = prefs.getBool('isOnboardingCompleted');
+    final tokenStorage = TokenStorage();
+    final token = await tokenStorage.getToken();
 
-    bool? isOnboardingCompleted = prefs.getBool('isOnboardingCompleted');
+    await Future.delayed(Duration(seconds: 1));
 
-    if (isOnboardingCompleted == null) {
+    if (isOnboardingCompleted == false) {
       context.go('/languages');
+    } else if (token != null && token.isNotEmpty) {
+      context.go('/home'); // Đã có thông tin người dùng
     } else {
+      // Chưa đăng nhập, chuyển tới trang welcome
       context.go('/welcome');
-
     }
   }
 
@@ -38,8 +41,8 @@ class _LoadingState extends State<Loading> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.white,
-        body:  Center(
-            child: Lottie.asset("assets/animations/person.json")));
+      backgroundColor: Colors.blueAccent,
+      body: Center(child: CircularProgressIndicator()),
+    );
   }
 }

@@ -28,7 +28,8 @@ class AuthRepositoryImpl implements AuthRepository {
           CLIENT_SECRET, params.username, params.password);
       if (httpResponse.response.statusCode == HttpStatus.ok) {
         final token = httpResponse.response.data['access_token'];
-        tokenStorage.saveToken(token);
+        final expires = httpResponse.response.data['expires_in'];
+        tokenStorage.saveToken(token, expires);
       } else {
         throw Exception(
             'Failed to login: ${httpResponse.response.statusMessage}');

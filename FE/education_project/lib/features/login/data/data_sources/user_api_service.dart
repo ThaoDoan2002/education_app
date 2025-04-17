@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 
 import '../../../../core/constants/constants.dart';
-import '../models/user.dart';
+import '../../../home/data/models/user.dart';
 
 part 'user_api_service.g.dart';
 

@@ -27,6 +27,8 @@ class LoginNotifier extends _$LoginNotifier {
     try {
       await ref.read(loginUseCaseProvider).call(params: params);
       state = const LoginDone();
+      print('hiiiiiiiiiiiii');
+
     } catch (e) {
       print(e);
       if (e is DioException) {

@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:education_project/features/login/domain/entities/user.dart';
+import 'package:education_project/features/home/domain/entities/user.dart';
 import 'package:education_project/features/login/domain/usecases/get_current_user.dart';
 import 'package:education_project/features/login/presentation/provider/state/user_state.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

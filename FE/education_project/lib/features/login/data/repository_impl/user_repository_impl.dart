@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:education_project/features/login/data/data_sources/user_api_service.dart';
-import 'package:education_project/features/login/domain/entities/user.dart';
+import 'package:education_project/features/home/domain/entities/user.dart';
 import 'package:education_project/features/login/domain/repository/user_repository.dart';
 
 import '../../../../config/storage/token_storage.dart';

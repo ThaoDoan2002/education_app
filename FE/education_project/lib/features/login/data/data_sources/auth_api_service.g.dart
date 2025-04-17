@@ -14,7 +14,7 @@ class _AuthAPIService implements AuthAPIService {
     this.baseUrl,
     this.errorLogger,
   }) {
-    baseUrl ??= 'https://658c-14-226-227-175.ngrok-free.app';
+    baseUrl ??= 'https://5fef-14-226-227-175.ngrok-free.app';
   }
 
   final Dio _dio;

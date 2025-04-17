@@ -2,6 +2,7 @@ import 'package:education_project/features/login/presentation/provider/state/log
 import 'package:education_project/features/login/presentation/widgets/password_login_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../domain/usecases/params/login_param.dart';
 import '../provider/login_provider.dart';
@@ -50,6 +51,52 @@ class _LoginState extends ConsumerState<Login> {
 
   @override
   Widget build(BuildContext context) {
+    Future<void> handleLogin() async {
+      if (enteredUsername.isEmpty) {
+        setState(() {
+          errorMessage = 'Vui lòng nhập Username';
+        });
+        return;
+      } else if (enteredPassword.isEmpty) {
+        setState(() {
+          errorMessage = 'Vui lòng nhập mật khẩu';
+        });
+        return;
+      }
+      if (isLoad == false) {
+        // Ẩn bàn phím sau khi nhấn nút
+        FocusScope.of(context).requestFocus(FocusNode());
+        setState(() {
+          isLoad = true;
+        });
+      }
+
+      // Tạo đối tượng params cho login
+      LoginBodyParams params = LoginBodyParams(
+        username: enteredUsername,
+        password: enteredPassword,
+      );
+      // Gọi phương thức login
+
+      await ref.read(loginNotifierProvider.notifier).login(params);
+      final loginState = ref.read(loginNotifierProvider);
+      if (loginState is LoginDone) {
+        errorMessage = '';
+        context.go('/home');
+      } else if (loginState is LoginError) {
+        setState(() {
+          errorMessage = 'Username or Password invalid!';
+          enteredPassword = '';
+          enteredUsername = '';
+          _usernameController.clear();
+          _passwordController.clear();
+        });
+        FocusScope.of(context).requestFocus(_usernameFocusNode);
+      }
+      setState(() {
+        isLoad = false;
+      });
+    }
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -79,7 +126,6 @@ class _LoginState extends ConsumerState<Login> {
                 height: 8,
               ),
               TextFormField(
-
                 onChanged: (username) {
                   enteredUsername = username;
                 },
@@ -134,7 +180,6 @@ class _LoginState extends ConsumerState<Login> {
                       : Colors.black, // Màu chữ input khi loading
                 ),
               ),
-
               SizedBox(
                 height: 12,
               ),
@@ -240,52 +285,7 @@ class _LoginState extends ConsumerState<Login> {
               ),
               ButtonBlue2(
                   isLoad: isLoad,
-                  function: () async {
-                    if (enteredUsername.isEmpty) {
-                      setState(() {
-                        errorMessage = 'Vui lòng nhập Username';
-                      });
-                      return;
-                    } else if (enteredPassword.isEmpty) {
-                      setState(() {
-                        errorMessage = 'Vui lòng nhập mật khẩu';
-                      });
-                      return;
-                    }
-                    if (isLoad == false) {
-                      // Ẩn bàn phím sau khi nhấn nút
-                      FocusScope.of(context).requestFocus(FocusNode());
-                      setState(() {
-                        isLoad = true;
-                      });
-                    }
-
-                    // Tạo đối tượng params cho login
-                    LoginBodyParams params = LoginBodyParams(
-                      username: enteredUsername,
-                      password: enteredPassword,
-                    );
-                    // Gọi phương thức login
-
-                    await ref.read(loginNotifierProvider.notifier).login(params);
-                    final loginState = ref.read(loginNotifierProvider);
-                    if (loginState is LoginDone) {
-                      errorMessage = '';
-                      Navigator.pushReplacementNamed(context, '/home_login');
-                    } else if (loginState is LoginError) {
-                      setState(() {
-                        errorMessage = 'Username or Password invalid!';
-                        enteredPassword = '';
-                        enteredUsername = '';
-                        _usernameController.clear();
-                        _passwordController.clear();
-                      });
-                      FocusScope.of(context).requestFocus(_usernameFocusNode);
-                    }
-                    setState(() {
-                      isLoad = false;
-                    });
-                  },
+                  function: handleLogin,
                   text: AppLocalizations.of(context)!.login_signin_btn),
               SizedBox(
                 height: 20,

@@ -1,4 +1,4 @@
-import 'package:education_project/features/login/domain/entities/user.dart';
+import 'package:education_project/features/home/domain/entities/user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:education_project/features/login/presentation/provider/state/user_state.dart';

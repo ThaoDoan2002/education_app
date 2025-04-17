@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:education_project/features/login/domain/entities/user.dart';
+import 'package:education_project/features/home/domain/entities/user.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class UserState extends Equatable{

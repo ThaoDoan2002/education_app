@@ -1,9 +1,11 @@
+import 'package:education_project/features/courses/presentation/pages/courses.dart';
+import 'package:education_project/video_page.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/choose_language/presentation/pages/choose_language.dart';
 import '../../features/forget_password/presentation/pages/forgot_password.dart';
 import '../../features/forget_password/presentation/pages/reset_password.dart';
-import '../../features/home/presentation/home.dart';
+import '../../features/home/presentation/pages/home.dart';
 import '../../features/intro/presentation/pages/onboarding.dart';
 import '../../features/login/presentation/pages/login.dart';
 import '../../features/register/presentation/pages/register.dart';
@@ -17,7 +19,7 @@ final GoRouter appRouter = GoRouter(
   routes: [
     GoRoute(
       path: '/',
-      builder: (context, state) => const Home(),
+      builder: (context, state) =>  const Loading(),
     ),
     GoRoute(
       path: '/languages',
@@ -45,9 +47,12 @@ final GoRouter appRouter = GoRouter(
     ),
     GoRoute(
       path: '/home',
-      builder: (context, state) => const Home(),
+      builder: (context, state) =>  Home(),
     ),
-
+    GoRoute(
+      path: '/courses',
+      builder: (context, state) =>  CoursesScreen(),
+    ),
     GoRoute(
       path: '/reset-password',
       name: 'reset-password',

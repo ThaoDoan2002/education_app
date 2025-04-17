@@ -23,7 +23,7 @@ class UserModel extends UserEntity {
       firstName: map['first_name'] ?? "", // Chuỗi rỗng cho String nếu null
       lastName: map['last_name'] ?? "",
       email: map['email'] ?? "",
-      avatar: map['avatar'] ?? "",
+      avatar: map['avatar'] ?? "https://w7.pngwing.com/pngs/205/731/png-transparent-default-avatar.png",//lấy từ server
       phone: map['phone'] ?? "",
     );
   }

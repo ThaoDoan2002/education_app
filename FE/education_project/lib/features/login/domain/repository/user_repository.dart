@@ -1,4 +1,4 @@
-import 'package:education_project/features/login/domain/entities/user.dart';
+import 'package:education_project/features/home/domain/entities/user.dart';
 
 import '../../../../core/resources/data_state.dart';
 
