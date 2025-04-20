@@ -5,10 +5,12 @@ from celery import shared_task
 import boto3
 from django.core.mail import send_mail
 
-from courses.models import Video
+from courses.models import Video, User
 import time
 
 from django.conf import settings
+from firebase_admin import messaging
+
 
 
 @shared_task
@@ -68,6 +70,30 @@ def upload_video_to_s3(file_path, filename, video_instance_id):
 
     except Exception as e:
         print(f"An error occurred: {e}")
+
+
+@shared_task
+def send_payment_success_email(user_id, course_name):
+    user = User.objects.get(id=user_id)
+    subject = f"Thanh toán thành công cho khóa học {course_name}"
+    message = f"Chào {user.username},\n\nBạn đã thanh toán thành công cho khóa học {course_name}. Chúc bạn học tốt!"
+    from_email = settings.EMAIL_HOST_USER
+
+    send_mail(subject, message, from_email, [user.email])
+
+
+@shared_task
+def send_delayed_push_notification(token, title, body):
+    time.sleep(3)
+    message = messaging.Message(
+        notification=messaging.Notification(
+            title=title,
+            body=body
+        ),
+        token=token
+    )
+    response = messaging.send(message)
+    print(f"Push sent to {token}: {response}")
 
 
 

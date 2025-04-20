@@ -35,3 +35,5 @@ def file_size(value):
                 raise ValidationError("Không thể xóa file tạm thời vì nó đang được sử dụng.")
 
     return value
+
+

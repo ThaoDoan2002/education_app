@@ -72,7 +72,7 @@ class LessonInlineAdmin(admin.StackedInline):
 
 
 
-class CourseAdmin(ImportExportModelAdmin):
+class CourseAdmin(admin.ModelAdmin):
     inlines = [LessonInlineAdmin ]
 
 

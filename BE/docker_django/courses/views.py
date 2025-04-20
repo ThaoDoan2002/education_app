@@ -1,6 +1,5 @@
 import os
 
-
 from django.core.files.uploadedfile import InMemoryUploadedFile, TemporaryUploadedFile
 
 from django.shortcuts import render
@@ -25,6 +24,7 @@ from django.utils.http import urlsafe_base64_decode
 from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
+from rest_framework.permissions import IsAuthenticated
 import requests
 
 
@@ -33,13 +33,70 @@ import requests
 
 
 from . import perms
-from .models import Category, Course, Lesson, User, Video, Payment
-from .serializers import VideoSerializer
+from .models import Category, Course, Lesson, User, Video, Payment, DeviceToken
+from .serializers import VideoSerializer, CourseSerializer, DeviceTokenSerializer, LessonSerializer
 
 
-class CategoryViewSet(viewsets.ViewSet, generics.ListAPIView):
+class CategoryViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView):
     queryset = Category.objects.all()
     serializer_class = serializers.CategorySerializer
+
+    def get_permissions(self):
+        if self.action.__eq__('courses_by_category') | self.action.__eq__('paid-courses'):
+            return [permissions.IsAuthenticated()]
+        return [permissions.AllowAny()]
+
+    @action(detail=True, methods=['get'], url_path='courses')
+    def courses_by_category(self, request, pk=None):
+        try:
+            category = self.get_object()  # Lấy Category theo pk
+            user = request.user  # Lấy user hiện tại từ request
+
+            # Lọc ra khoá học trong category
+            courses = Course.objects.filter(category=category)
+
+            # Lọc khoá học mà người dùng chưa thanh toán (trong Payment)
+            unpaid_courses = []
+
+            for course in courses:
+                # Kiểm tra xem người dùng đã thanh toán chưa cho khoá học này
+                payment = Payment.objects.filter(user=user, course=course).first()
+
+                if not payment or payment.status == False:  # Nếu chưa thanh toán hoặc thanh toán thất bại
+                    unpaid_courses.append(course)
+
+            # Serialize lại danh sách khoá học chưa thanh toán
+            serializer = CourseSerializer(unpaid_courses, many=True, context={'request': request})
+
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        except Category.DoesNotExist:
+            return Response({'error': 'Category không tồn tại'}, status=status.HTTP_404_NOT_FOUND)
+
+    @action(detail=True, methods=['get'], url_path='paid-courses')
+    def paid_courses(self, request, pk=None):
+        try:
+            category = self.get_object()  # Lấy Category theo pk
+            user = request.user  # Lấy user hiện tại từ request
+
+            # Lọc ra khoá học trong category mà người dùng đã thanh toán
+            purchased_courses = Course.objects.filter(
+                category=category,
+                payment__user=user,
+                payment__status=True
+            ).distinct()  # Lọc khoá học không trùng lặp
+
+            # Serialize lại danh sách khoá học đã thanh toán
+            serializer = CourseSerializer(purchased_courses, many=True, context={'request': request})
+
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        except Category.DoesNotExist:
+            return Response({'error': 'Category không tồn tại'}, status=status.HTTP_404_NOT_FOUND)
+
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 class CourseViewSet(viewsets.ViewSet, generics.ListAPIView, generics.CreateAPIView, generics.RetrieveAPIView):
@@ -48,35 +105,44 @@ class CourseViewSet(viewsets.ViewSet, generics.ListAPIView, generics.CreateAPIVi
     pagination_class = paginators.CoursePaginator
 
     def get_permissions(self):
-        if self.action.__eq__('courses_bought'):
+        if self.action in ['paid_courses', 'lessons']:
             return [permissions.IsAuthenticated()]
         return [permissions.AllowAny()]
 
-    @action(methods=['get'], detail=False)
-    def courses_bought(self, request):
-        user = request.user
-        # Lấy danh sách các khóa học mà user đã thanh toán thành công
-        paid_courses_ids = Payment.objects.filter(user=user, status=True).values_list('course', flat=True)
-        bought_courses = Course.objects.filter(id__in=paid_courses_ids)
+    @action(detail=False, methods=['get'], url_path='paid-courses')
+    def paid_courses(self, request):
+        try:
+            user = request.user  # Lấy user hiện tại từ request
 
-        # Sử dụng paginator để phân trang
-        paginator = self.paginator
-        page = paginator.paginate_queryset(bought_courses, request)
+            # Lọc ra các khoá học mà người dùng đã thanh toán
+            paid_courses = Course.objects.filter(payment__user=user, payment__status=True).distinct()
 
-        # Kiểm tra nếu có phân trang
-        if page is not None:
-            serializer = serializers.CourseSerializer(page, many=True, context={'request': request})
-            return paginator.get_paginated_response(serializer.data)
+            # Serialize lại danh sách khoá học đã thanh toán
+            serializer = CourseSerializer(paid_courses, many=True, context={'request': request})
 
-        # Nếu không có phân trang, trả về tất cả dữ liệu
-        serializer = serializers.CourseSerializer(bought_courses, many=True, context={'request': request})
-        return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @action(methods=['get'], detail=True)
-    def lessons(self, request, pk):
-        lessons = self.get_object().lesson_set.filter(active=True)
-        return Response(serializers.LessonSerializer(lessons, many=True, context={'request': request}).data,
-                        status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=['get'], url_path='lessons')
+    def lessons(self, request, pk=None):
+        try:
+            course = Course.objects.get(pk=pk, active=True)
+
+            # Kiểm tra nếu người dùng đã thanh toán khoá học này
+            if not Payment.objects.filter(user=request.user, course=course, status=True).exists():
+                return Response({'error': 'Bạn chưa thanh toán khoá học này!'}, status=status.HTTP_403_FORBIDDEN)
+
+            lessons = course.lessons.all()  # hoặc course.lessons.all() nếu bạn đặt related_name='lessons'
+            serializer = LessonSerializer(lessons, many=True, context={'request': request})  # ✅ THÊM context
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        except Course.DoesNotExist:
+            return Response({'error': 'Khoá học không tồn tại!'}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            print(e)
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class LessonViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
@@ -84,20 +150,35 @@ class LessonViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
     serializer_class = serializers.LessonSerializer
 
     def get_permissions(self):
-        if self.action.__eq__('videos'):
+        if self.action.__eq__('video'):
             return [permissions.IsAuthenticated(), perms.IsPaymentGranted()]
         return [permissions.AllowAny()]
 
     @action(methods=['get'], detail=True)
-    def videos(self, request, pk):
-        videos = self.get_object().video_set.filter(active=True)
-        return Response(serializers.VideoSerializer(videos, many=True).data, status=status.HTTP_200_OK)
+    def video(self, request, pk):
+        try:
+            lesson = self.get_object()  # lesson
+            video = lesson.video  # lấy video từ quan hệ OneToOneField
+
+            if not video.active:
+                return Response({'error': 'Video chưa được kích hoạt'}, status=status.HTTP_403_FORBIDDEN)
+
+            serializer = serializers.VideoSerializer(video)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        except Video.DoesNotExist:
+            return Response({'error': 'Bài học chưa có video'}, status=status.HTTP_404_NOT_FOUND)
 
 
 class UserViewSet(viewsets.ViewSet, generics.CreateAPIView):
     queryset = User.objects.filter(is_active=True)
     serializer_class = serializers.UserSerializer
     parser_classes = [parsers.MultiPartParser]
+
+    def get_permissions(self):
+        if self.action.__eq__('current_user'):
+            return [permissions.IsAuthenticated()]
+        return [permissions.AllowAny()]
 
     def create(self, request):
         token = request.data.get('token')
@@ -107,8 +188,6 @@ class UserViewSet(viewsets.ViewSet, generics.CreateAPIView):
         firstName = request.data.get('firstName')
         lastName = request.data.get('lastName')
 
-
-
         if not username or not password:
             return Response({'error': 'Vui lòng nhập đầy đủ username và password'}, status=400)
 
@@ -117,22 +196,17 @@ class UserViewSet(viewsets.ViewSet, generics.CreateAPIView):
             firebase_uid = decoded_token['uid']
             email = decoded_token['email']
             email_verified = decoded_token['email_verified']
-            print(f'email {email_verified}')
-
 
             if not email_verified:
                 return Response({'error': 'Email chưa được xác minh'}, status=400)
 
-            # Kiểm tra trùng username (nếu cần)
             if User.objects.filter(username=username).exists():
 
                 return Response({'error': 'Username đã được sử dụng'}, status=400)
 
-                # Kiểm tra trùng username (nếu cần)
             if User.objects.filter(phone=phone).exists():
                 return Response({'error': 'Số điện thoai đã được sử dụng'}, status=400)
 
-            # Tạo user mới
             user, created = User.objects.get_or_create(
                 firebase_uid=firebase_uid,
                 defaults={
@@ -142,12 +216,10 @@ class UserViewSet(viewsets.ViewSet, generics.CreateAPIView):
                     'phone': phone,
                     'first_name': firstName,
                     'last_name': lastName
-
                 }
             )
 
             if not created:
-
                 return Response({'error': 'Tài khoản đã tồn tại'}, status=400)
 
             return Response({'message': 'Đăng ký thành công'})
@@ -155,15 +227,9 @@ class UserViewSet(viewsets.ViewSet, generics.CreateAPIView):
         except Exception as e:
             return Response({'error': str(e)}, status=400)
 
-    def get_permissions(self):
-        if self.action.__eq__('current_user'):
-            return [permissions.IsAuthenticated()]
-        return [permissions.AllowAny()]
-
     @action(methods=['get'], url_name='current-users', detail=False)
     def current_user(self, request):
         return Response(serializers.UserSerializer(request.user).data)
-
 
 
 class FirebaseLoginViewSet(viewsets.ViewSet):
@@ -327,9 +393,26 @@ class VideoViewSet(viewsets.ViewSet, generics.CreateAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class SaveDeviceTokenView(viewsets.ViewSet):
+    permission_classes = [IsAuthenticated]
+
+    def create(self, request):
+        user = request.user if request.user.is_authenticated else None
+        token = request.data.get('token')
+        platform = request.data.get('platform')
+
+        device, created = DeviceToken.objects.update_or_create(
+            token=token,
+            defaults={'user': user, 'platform': platform}
+        )
+        print(token)
+        print(platform)
+
+        return Response({'message': 'Token saved'})
+
 def successed(request):
     return render(request, 'payment_successful.html')
 
 
 def cancelled(request):
-    return render(request, 'cancelled.html')
+    return render(request, 'payment_cancelled.html')

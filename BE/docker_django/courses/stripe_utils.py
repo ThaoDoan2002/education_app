@@ -6,8 +6,9 @@ from rest_framework import viewsets, status, permissions
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.decorators import action
+from .tasks import send_delayed_push_notification
 
-from .models import Course, Payment, User
+from .models import Course, Payment, User, DeviceToken
 from .perms import IsPaymentGranted
 
 # Cấu hình Stripe API key
@@ -44,7 +45,7 @@ class StripeCheckoutViewSet(viewsets.ViewSet):
                         'product_data': {
                             'name': course.name,
                         },
-                        'unit_amount': amount*1000000,
+                        'unit_amount': amount,
                     },
                     'quantity': 1,
                 }],
@@ -82,6 +83,7 @@ def stripe_webhook(request):
 
     # Xử lý sự kiện thanh toán thành công
     if event['type'] == 'checkout.session.completed':
+        print('eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeiiiii');
         session = event['data']['object']
 
         # Lấy metadata
@@ -98,5 +100,12 @@ def stripe_webhook(request):
             course=course,
             status=True
         )
+        device_tokens = DeviceToken.objects.filter(user=user).values_list('token', flat=True)
+        for token in device_tokens:
+            send_delayed_push_notification.delay(token, "Thanh toán thành công",
+                                                 f"Bạn đã đăng ký thành công khóa học {course.name}!")
+
+
+
 
     return JsonResponse({'status': 'success'})
