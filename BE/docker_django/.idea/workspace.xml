@@ -5,8 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="07109a8b-765b-4353-9730-5bffd8ab30c7" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../../FE/education_project/lib/features/home/presentation/widgets/card_course.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../FE/education_project/lib/features/home/presentation/home.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../../FE/education_project/lib/features/home/presentation/home.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../FE/education_project/lib/features/home/presentation/widgets/card_course.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../../FE/education_project/lib/features/home/presentation/widgets/card_course.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../FE/education_project/linux/flutter/generated_plugin_registrant.cc" beforeDir="false" afterPath="$PROJECT_DIR$/../../FE/education_project/linux/flutter/generated_plugin_registrant.cc" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../FE/education_project/linux/flutter/generated_plugin_registrant.h" beforeDir="false" afterPath="$PROJECT_DIR$/../../FE/education_project/linux/flutter/generated_plugin_registrant.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../FE/education_project/linux/flutter/generated_plugins.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/../../FE/education_project/linux/flutter/generated_plugins.cmake" afterDir="false" />
