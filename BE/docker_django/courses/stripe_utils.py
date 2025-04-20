@@ -83,7 +83,7 @@ def stripe_webhook(request):
 
     # Xử lý sự kiện thanh toán thành công
     if event['type'] == 'checkout.session.completed':
-        print('eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeiiiii');
+        print('donnnnnnnnnnnnnnnnnnnnnnnnne');
         session = event['data']['object']
 
         # Lấy metadata

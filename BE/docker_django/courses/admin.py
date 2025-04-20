@@ -123,4 +123,6 @@ admin_site.register(Category)
 admin_site.register(Course)
 admin_site.register(Lesson)
 admin_site.register(User)
+admin_site.register(Payment)
+
 
