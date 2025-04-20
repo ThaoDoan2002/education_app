@@ -14,10 +14,11 @@ router.register('payments', StripeCheckoutViewSet, basename='payments')
 router.register('social_login', views.FirebaseLoginViewSet, basename='social_login')
 router.register('request-reset-password', views.ResetPasswordRequestViewSet, basename='request-reset-password')
 router.register('reset-password', views.ResetPasswordConfirmViewSet, basename='reset-password')
+router.register('save-device-token', views.SaveDeviceTokenView, basename='save-device-token')
 
 urlpatterns = [
     path('', include(router.urls)),
     path('success/', views.successed, name="success"),
-    path('cancel/', views.successed, name="cancel"),
+    path('cancel/', views.cancelled, name="cancel"),
     path('webGoHooks/', stripe_webhook, name='stripe_webhook'),
 ]

@@ -46,19 +46,19 @@ class Course(BaseModel):
 class Lesson(BaseModel):
     title = models.CharField(max_length=255, null=False)
     description = models.TextField(null=True, blank=True, max_length=255)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='lessons')
 
     class Meta:
         unique_together = ('title', 'course')
 
     def __str__(self):
-        return self.title
+        return self.title + " - " + self.course.name
 
 
 class Video(BaseModel):
     thumbnail = CloudinaryField('thumbnail')
     url = models.FileField(upload_to='courses/%Y/%m', validators=[file_size])
-    lesson = models.OneToOneField(Lesson, on_delete=models.CASCADE)
+    lesson = models.OneToOneField(Lesson, on_delete=models.CASCADE, related_name='video')
 
 
 class Note(BaseModel):
@@ -69,9 +69,17 @@ class Note(BaseModel):
 
 
 class Payment(BaseModel):
-    user = models.ForeignKey(User, on_delete=models.RESTRICT, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, null=True)
     status = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ('user', 'course')
+
+
+class DeviceToken(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    token = models.CharField(max_length=255, unique=True)
+    platform = models.CharField(max_length=10, choices=[('android', 'Android'), ('ios', 'iOS')])
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)

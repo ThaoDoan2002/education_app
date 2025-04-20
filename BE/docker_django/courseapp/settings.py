@@ -16,7 +16,7 @@ from dotenv import load_dotenv
 import firebase_admin
 from firebase_admin import credentials
 
-load_dotenv('.env')
+load_dotenv('.env.local')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -30,7 +30,7 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 DEBUG = bool(os.environ.get("DEBUG", default=0))
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "127.0.0.1").split(",")
 # Application definition
-MY_HOST="localhost"
+MY_HOST="https://5fef-14-226-227-175.ngrok-free.app"
 INSTALLED_APPS = [
     'jazzmin',
     'django.contrib.admin',
@@ -52,8 +52,7 @@ INSTALLED_APPS = [
     'import_export',
 ]
 
-URL='https://aa4e-14-226-227-175.ngrok-free.app'
-FIREBASE_API_KEY='AIzaSyC-cbQLVI5dXsfxGCEdRvBhiV6aAY2ov3E'
+URL='https://5fef-14-226-227-175.ngrok-free.app'
 
 
 CORS_ALLOW_ALL_ORIGINS = True
@@ -212,8 +211,12 @@ AWS_QUERYSTRING_AUTH = False  # Bỏ client_id và secret sau url đi
 
 MEDIA_URL = f'https://{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/'
 
-CELERY_BROKER_URL = 'redis://redis:6379/0'
-CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
+# CELERY_BROKER_URL = 'redis://redis:6379/0'
+# CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
+
+
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
 
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
@@ -346,7 +349,7 @@ JAZZMIN_SETTINGS = {
     "language_chooser": True,
 
 }
-
+FCM_SERVER_KEY = "e648e129be458c220232d4de7e5be921369b26ae"
 JAZZMIN_UI_TWEAKS = {
     "theme": "darkly",
 }
@@ -356,3 +359,6 @@ firebase_cred_path = os.path.join(BASE_DIR,'courseapp', 'firebase', 'firebase-ad
 if not firebase_admin._apps:
     cred = credentials.Certificate(firebase_cred_path)
     firebase_admin.initialize_app(cred)
+
+
+FIREBASE_API_KEY='e648e129be458c220232d4de7e5be921369b26ae'

@@ -1,4 +1,4 @@
-from courses.models import Category, Course, Lesson, User, Video, Payment
+from courses.models import Category, Course, Lesson, User, Video, Payment, DeviceToken
 from rest_framework import serializers
 
 
@@ -69,3 +69,20 @@ class PaymentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Payment
         fields = '__all__'
+
+
+class DeviceTokenSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DeviceToken
+        fields = ['token', 'platform']
+
+    def create(self, validated_data):
+        user = self.context['request'].user
+        token = validated_data['token']
+
+        # Nếu token đã tồn tại, cập nhật platform và user
+        device_token, created = DeviceToken.objects.update_or_create(
+            token=token,
+            defaults={'user': user, 'platform': validated_data['platform']}
+        )
+        return device_token
