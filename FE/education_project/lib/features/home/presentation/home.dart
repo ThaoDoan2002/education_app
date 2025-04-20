@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:education_project/features/choose_language/presentation/widgets/button_widget.dart';
+import 'package:education_project/features/home/presentation/widgets/card_course.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
@@ -127,6 +128,13 @@ class _HomeState extends State<Home> {
               options: CarouselOptions(viewportFraction: 1),
               items: [Slider(), Slider(), Slider()],
             ),
+            SizedBox(height: 10,),
+            CourseCard(
+              title: "Luyện thi IELTS cấp tốc",
+              thumbnailUrl: "https://example.com/course-thumbnail.jpg",
+              teacherName: "Nguyễn Văn A",
+              price: 499000,
+            )
           ],
         ),
       ),
