@@ -6,11 +6,10 @@ from django.contrib import admin
 from django.core.files.uploadedfile import InMemoryUploadedFile, TemporaryUploadedFile
 from django.db.models import F, Sum, ExpressionWrapper
 from django.template.response import TemplateResponse
-from import_export import resources
-from import_export.admin import ImportExportModelAdmin
+
 
 from .forms import RevenueFilterForm
-from .models import Category, Course, Lesson, User, Video, Payment
+from .models import Category, Course, Lesson, User, Video, Payment, VideoTimeline
 from .tasks import upload_video_to_s3
 from django.urls import path
 
@@ -124,5 +123,5 @@ admin_site.register(Course)
 admin_site.register(Lesson)
 admin_site.register(User)
 admin_site.register(Payment)
-
+admin_site.register(VideoTimeline)
 

@@ -163,7 +163,7 @@ class LessonViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
             if not video.active:
                 return Response({'error': 'Video chưa được kích hoạt'}, status=status.HTTP_403_FORBIDDEN)
 
-            serializer = serializers.VideoSerializer(video)
+            serializer = serializers.VideoDetailSerializer(video, context={'request': request})
             return Response(serializer.data, status=status.HTTP_200_OK)
 
         except Video.DoesNotExist:

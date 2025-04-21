@@ -60,6 +60,17 @@ class Video(BaseModel):
     url = models.FileField(upload_to='courses/%Y/%m', validators=[file_size])
     lesson = models.OneToOneField(Lesson, on_delete=models.CASCADE, related_name='video')
 
+class VideoTimeline(models.Model):
+    video = models.ForeignKey(Video, on_delete=models.CASCADE, related_name='timelines')
+    time_in_seconds = models.PositiveIntegerField(help_text="Time in seconds for the timeline mark.")
+    description = models.TextField(help_text="Description of the timeline point.")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['time_in_seconds']
+
+
+
 
 class Note(BaseModel):
     content = models.TextField(max_length=255)

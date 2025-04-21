@@ -1,6 +1,5 @@
-from courses.models import Category, Course, Lesson, User, Video, Payment, DeviceToken, Note
+from courses.models import Category, Course, Lesson, User, Video, Payment, DeviceToken, Note, VideoTimeline
 from rest_framework import serializers
-
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -30,8 +29,36 @@ class VideoSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class VideoDetailSerializer(serializers.ModelSerializer):
+    notes = serializers.SerializerMethodField()
+    timelines = serializers.SerializerMethodField()  # Thêm trường timelines
+
+    class Meta:
+        model = Video
+        fields = ['id', 'thumbnail', 'url', 'notes', 'timelines']  # Thêm timelines vào fields
+
+    def get_notes(self, obj):
+        request = self.context.get('request')
+        user = request.user if request else None
+        if not user or user.is_anonymous:
+            return []
+        notes = obj.notes.filter(user=user)
+        return NoteSerializer(notes, many=True).data
+
+    def get_timelines(self, obj):
+        # Lấy mốc thời gian cho video
+        timelines = obj.timelines.all()
+        return VideoTimelineSerializer(timelines, many=True).data
+
+class VideoTimelineSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = VideoTimeline
+        fields = '__all__'
+
+
 class LessonSerializer(serializers.ModelSerializer):
     payment_status = serializers.SerializerMethodField()
+
     class Meta:
         model = Lesson
         fields = ['id', 'title', 'description', 'course', 'payment_status']
@@ -47,7 +74,7 @@ class LessonSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id','username', 'password', 'email', 'phone', 'first_name', 'last_name']
+        fields = ['id', 'username', 'password', 'email', 'phone', 'first_name', 'last_name']
         extra_kwargs = {
             'password': {
                 'write_only': True
@@ -58,11 +85,10 @@ class UserSerializer(serializers.ModelSerializer):
         data = validated_data.copy()
 
         user = User(**data)
-        user.set_password(data['password'])  #băm mật khẩu
+        user.set_password(data['password'])  # băm mật khẩu
         user.save()
 
         return user
-
 
 
 class PaymentSerializer(serializers.ModelSerializer):
