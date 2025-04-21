@@ -9,12 +9,14 @@ router.register('categories', views.CategoryViewSet, basename='categories')
 router.register('courses', views.CourseViewSet, basename='courses')
 router.register('lessons', views.LessonViewSet, basename='lessons')
 router.register('users', views.UserViewSet, basename='users')
-router.register('videos', views.VideoViewSet, basename='videos')
+# router.register('videos', views.VideoViewSet, basename='videos')
 router.register('payments', StripeCheckoutViewSet, basename='payments')
 router.register('social_login', views.FirebaseLoginViewSet, basename='social_login')
 router.register('request-reset-password', views.ResetPasswordRequestViewSet, basename='request-reset-password')
 router.register('reset-password', views.ResetPasswordConfirmViewSet, basename='reset-password')
 router.register('save-device-token', views.SaveDeviceTokenView, basename='save-device-token')
+router.register('notes', views.NoteViewSet, basename='notes')
+
 
 urlpatterns = [
     path('', include(router.urls)),

@@ -1,4 +1,4 @@
-from courses.models import Category, Course, Lesson, User, Video, Payment, DeviceToken
+from courses.models import Category, Course, Lesson, User, Video, Payment, DeviceToken, Note
 from rest_framework import serializers
 
 
@@ -86,3 +86,9 @@ class DeviceTokenSerializer(serializers.ModelSerializer):
             defaults={'user': user, 'platform': validated_data['platform']}
         )
         return device_token
+
+
+class NoteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Note
+        fields = ['id', 'user', 'video', 'content', 'timestamp']

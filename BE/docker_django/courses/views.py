@@ -33,8 +33,8 @@ import requests
 
 
 from . import perms
-from .models import Category, Course, Lesson, User, Video, Payment, DeviceToken
-from .serializers import VideoSerializer, CourseSerializer, DeviceTokenSerializer, LessonSerializer
+from .models import Category, Course, Lesson, User, Video, Payment, DeviceToken, Note
+from .serializers import VideoSerializer, CourseSerializer, DeviceTokenSerializer, LessonSerializer, NoteSerializer
 
 
 class CategoryViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView):
@@ -358,39 +358,39 @@ class ResetPasswordConfirmViewSet(viewsets.ViewSet):
         user.save()
         return Response({"message": "Password has been reset"}, status=status.HTTP_200_OK)
 
-class VideoViewSet(viewsets.ViewSet, generics.CreateAPIView):
-    queryset = Video.objects.all()
-    serializer_class = VideoSerializer
-    parser_classes = [MultiPartParser]  # Để xử lý form-data với file
-
-    def create(self, request):
-        serializer = self.serializer_class(data=request.data)
-
-        if serializer.is_valid():
-            video_instance = serializer.save(url=None)  # Lưu instance video với url=None ban đầu
-
-            # Kiểm tra xem 'url' có trong request.FILES hay không
-            if 'url' in request.FILES:
-                video_file = request.FILES['url']
-
-                # Tạo thư mục tạm nếu chưa tồn tại
-                temp_dir = '/path/to/temp/dir'  # Đường dẫn tới thư mục tạm
-                if not os.path.exists(temp_dir):
-                    os.makedirs(temp_dir)
-
-                # Lưu tệp video tạm thời
-                if isinstance(video_file, (InMemoryUploadedFile, TemporaryUploadedFile)):
-                    temp_file_path = os.path.join(temp_dir, video_file.name)
-                    with open(temp_file_path, 'wb') as temp_file:
-                        for chunk in video_file.chunks():
-                            temp_file.write(chunk)
-
-                    # Gửi task lên Celery để upload file lên S3
-                    # upload_video_to_s3.delay(temp_file_path, video_file.name, video_instance.id)
-
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+# class VideoViewSet(viewsets.ViewSet, generics.CreateAPIView):
+#     queryset = Video.objects.all()
+#     serializer_class = VideoSerializer
+#     parser_classes = [MultiPartParser]  # Để xử lý form-data với file
+#
+#     def create(self, request):
+#         serializer = self.serializer_class(data=request.data)
+#
+#         if serializer.is_valid():
+#             video_instance = serializer.save(url=None)  # Lưu instance video với url=None ban đầu
+#
+#             # Kiểm tra xem 'url' có trong request.FILES hay không
+#             if 'url' in request.FILES:
+#                 video_file = request.FILES['url']
+#
+#                 # Tạo thư mục tạm nếu chưa tồn tại
+#                 temp_dir = '/path/to/temp/dir'  # Đường dẫn tới thư mục tạm
+#                 if not os.path.exists(temp_dir):
+#                     os.makedirs(temp_dir)
+#
+#                 # Lưu tệp video tạm thời
+#                 if isinstance(video_file, (InMemoryUploadedFile, TemporaryUploadedFile)):
+#                     temp_file_path = os.path.join(temp_dir, video_file.name)
+#                     with open(temp_file_path, 'wb') as temp_file:
+#                         for chunk in video_file.chunks():
+#                             temp_file.write(chunk)
+#
+#                     # Gửi task lên Celery để upload file lên S3
+#                     # upload_video_to_s3.delay(temp_file_path, video_file.name, video_instance.id)
+#
+#             return Response(serializer.data, status=status.HTTP_201_CREATED)
+#
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class SaveDeviceTokenView(viewsets.ViewSet):
@@ -409,6 +409,50 @@ class SaveDeviceTokenView(viewsets.ViewSet):
         print(platform)
 
         return Response({'message': 'Token saved'})
+
+
+class NoteViewSet(viewsets.ViewSet):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def create(self, request):
+        video = request.data.get('video_id')
+        timestamp = request.data.get('timestamp')
+        content = request.data.get('content')
+
+        if not video or timestamp is None:
+            return Response(
+                {"error": "Thiếu video hoặc timestamp"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Tìm ghi chú đã tồn tại chưa
+        note, created = Note.objects.update_or_create(
+            user=request.user,
+            video_id=video,
+            timestamp=timestamp,
+            defaults={'content': content}
+        )
+
+        serializer = NoteSerializer(note)
+        if created:
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def get(self, request):
+        video_id = request.query_params.get('video_id')
+        timestamp = request.query_params.get('timestamp')
+
+        if not video_id or timestamp is None:
+            return Response({"error": "Thiếu video hoặc timestamp"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            note = Note.objects.get(user=request.user, video_id=video_id, timestamp=timestamp)
+            serializer = NoteSerializer(note)
+            return Response({"note": serializer.data}, status=status.HTTP_200_OK)
+        except Note.DoesNotExist:
+            return Response({"note": None}, status=status.HTTP_200_OK)
+
 
 def successed(request):
     return render(request, 'payment_successful.html')
