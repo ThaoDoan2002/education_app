@@ -358,40 +358,20 @@ class ResetPasswordConfirmViewSet(viewsets.ViewSet):
         user.save()
         return Response({"message": "Password has been reset"}, status=status.HTTP_200_OK)
 
-# class VideoViewSet(viewsets.ViewSet, generics.CreateAPIView):
-#     queryset = Video.objects.all()
-#     serializer_class = VideoSerializer
-#     parser_classes = [MultiPartParser]  # Để xử lý form-data với file
-#
-#     def create(self, request):
-#         serializer = self.serializer_class(data=request.data)
-#
-#         if serializer.is_valid():
-#             video_instance = serializer.save(url=None)  # Lưu instance video với url=None ban đầu
-#
-#             # Kiểm tra xem 'url' có trong request.FILES hay không
-#             if 'url' in request.FILES:
-#                 video_file = request.FILES['url']
-#
-#                 # Tạo thư mục tạm nếu chưa tồn tại
-#                 temp_dir = '/path/to/temp/dir'  # Đường dẫn tới thư mục tạm
-#                 if not os.path.exists(temp_dir):
-#                     os.makedirs(temp_dir)
-#
-#                 # Lưu tệp video tạm thời
-#                 if isinstance(video_file, (InMemoryUploadedFile, TemporaryUploadedFile)):
-#                     temp_file_path = os.path.join(temp_dir, video_file.name)
-#                     with open(temp_file_path, 'wb') as temp_file:
-#                         for chunk in video_file.chunks():
-#                             temp_file.write(chunk)
-#
-#                     # Gửi task lên Celery để upload file lên S3
-#                     # upload_video_to_s3.delay(temp_file_path, video_file.name, video_instance.id)
-#
-#             return Response(serializer.data, status=status.HTTP_201_CREATED)
-#
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+class VideoViewSet(viewsets.ViewSet, generics.CreateAPIView):
+    queryset = Video.objects.all()
+    serializer_class = VideoSerializer
+    parser_classes = [MultiPartParser]
+    permission_classes = [IsAuthenticated]
 
+
+    @action(detail=True, methods=['get'] )
+    def notes(self, request, pk=None):
+        video = self.get_object()
+        user = request.user
+        notes = Note.objects.filter(video=video, user=user)
+        serializer = NoteSerializer(notes, many=True)
+        return Response(serializer.data)
 
 class SaveDeviceTokenView(viewsets.ViewSet):
     permission_classes = [IsAuthenticated]

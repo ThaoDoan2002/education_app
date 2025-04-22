@@ -76,7 +76,7 @@ class Note(BaseModel):
     content = models.TextField(max_length=255)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     video = models.ForeignKey(Video, on_delete=models.CASCADE, related_name='notes')
-    timestamp = models.FloatField()
+    timestamp = models.PositiveIntegerField()
 
 
 class Payment(BaseModel):
