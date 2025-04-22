@@ -22,7 +22,7 @@ class _LoadingState extends ConsumerState<Loading> {
 
     await Future.delayed(Duration(seconds: 1));
 
-    if (isOnboardingCompleted == false) {
+    if (isOnboardingCompleted == null ) {
       context.go('/languages');
     } else if (token != null && token.isNotEmpty) {
       context.go('/home'); // Đã có thông tin người dùng

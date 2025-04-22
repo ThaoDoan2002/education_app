@@ -10,9 +10,17 @@ part 'courses_api_service.g.dart';
 abstract class CoursesApiService {
   factory CoursesApiService(Dio dio, {String baseUrl}) = _CoursesApiService;
 
+  @GET('/categories/{id}/paid-courses/')
+  Future<HttpResponse<dynamic>> getOwnCoursesByCate(
+      @Path('id') int cateId,@Header('Authorization') String token);
+
   @GET('/courses/')
-  Future<HttpResponse<dynamic>> getCourses();
+  Future<HttpResponse<dynamic>> getOwnCourses(@Header('Authorization') String token);
+
 
   @GET('/categories/{id}/courses/')
-  Future<HttpResponse<dynamic>> getCoursesByCate(@Path('id') int cateId);
+  Future<HttpResponse<dynamic>> getCoursesByCate(
+    @Path('id') int cateId,
+    @Header('Authorization') String token,
+  );
 }

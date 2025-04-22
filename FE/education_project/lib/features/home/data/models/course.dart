@@ -10,6 +10,17 @@ class CourseModel extends CourseEntity {
     required super.price,
   });
 
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'description': description,
+      'thumbnail': thumbnail,
+      'price': price,
+    };
+  }
+
+
   factory CourseModel.fromJson(Map<String, dynamic> map) {
     return CourseModel(
       id: map['id'] ?? 0,

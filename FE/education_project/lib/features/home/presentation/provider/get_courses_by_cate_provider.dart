@@ -4,7 +4,7 @@ import 'package:education_project/features/home/data/repository_impl/course_repo
 import 'package:education_project/features/home/domain/entities/category.dart';
 import 'package:education_project/features/home/domain/entities/course.dart';
 import 'package:education_project/features/home/domain/usecases/get_cates.dart';
-import 'package:education_project/features/home/domain/usecases/get_courses.dart';
+import 'package:education_project/features/home/domain/usecases/get_own_courses_by_cate.dart';
 import 'package:education_project/features/home/domain/usecases/get_courses_by_cate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

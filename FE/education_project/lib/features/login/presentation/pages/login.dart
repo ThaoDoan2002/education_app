@@ -1,5 +1,11 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart';
+import 'package:education_project/config/storage/token_storage.dart';
+import 'package:education_project/core/constants/constants.dart';
 import 'package:education_project/features/login/presentation/provider/state/login_state.dart';
 import 'package:education_project/features/login/presentation/widgets/password_login_widget.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -51,6 +57,32 @@ class _LoginState extends ConsumerState<Login> {
 
   @override
   Widget build(BuildContext context) {
+    Future<void> _registerDeviceToken() async {
+      try {
+        FirebaseMessaging messaging = FirebaseMessaging.instance;
+        print('-------------------');
+        print(messaging);
+        String? token = await messaging.getToken();
+        print(token);
+        final tokenoauth = await TokenStorage().getToken();
+        final Dio dio = Dio();
+        if (token != null) {
+          await dio.post(
+            '$BASE_URL/save-device-token/',
+            data: {
+              'token': token,
+              'platform': Platform.isAndroid ? 'android' : 'ios',
+            },
+            options: Options(headers: {
+              'Authorization': 'Bearer $tokenoauth', // nếu cần token auth
+            }),
+          );
+        }
+      } catch (e) {
+        print('❌ Lỗi khi gửi device token: $e');
+      }
+    }
+
     Future<void> handleLogin() async {
       if (enteredUsername.isEmpty) {
         setState(() {
@@ -82,6 +114,7 @@ class _LoginState extends ConsumerState<Login> {
       final loginState = ref.read(loginNotifierProvider);
       if (loginState is LoginDone) {
         errorMessage = '';
+        await _registerDeviceToken();
         context.go('/home');
       } else if (loginState is LoginError) {
         setState(() {

@@ -130,7 +130,7 @@ class _WelcomeState extends ConsumerState<Welcome> with SingleTickerProviderStat
               child: Container(
                 padding: const EdgeInsets.only(top: 50, left: 20, right: 20),
                 margin: EdgeInsets.only(top: size.height * 0.35),
-                height: 550,
+                height: 560,
                 decoration: const BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.only(

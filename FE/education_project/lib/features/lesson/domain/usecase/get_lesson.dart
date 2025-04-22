@@ -5,19 +5,20 @@ import 'package:education_project/features/home/domain/entities/course.dart';
 import 'package:education_project/features/home/domain/entities/user.dart';
 import 'package:education_project/features/home/domain/repository/cate_repository.dart';
 import 'package:education_project/features/home/domain/repository/course_repository.dart';
+import 'package:education_project/features/lesson/domain/entities/lesson.dart';
 
-import '../repository/user_info_repository.dart';
+import '../repository/lesson_repository.dart';
 
 
-class GetCoursesUseCase implements UseCase<List<CourseEntity>,void>{
-  final CourseRepository _courseRepository;
+class GetLessonsUseCase implements UseCase<List<LessonEntity>,int>{
+  final LessonRepository _lessonRepository;
 
-  GetCoursesUseCase(this._courseRepository);
+  GetLessonsUseCase(this._lessonRepository);
 
   @override
-  Future<List<CourseEntity>> call({void params}) async {
+  Future<List<LessonEntity>> call({int? params}) async {
     try {
-      return await _courseRepository.getCourses();
+      return await _lessonRepository.getLesson(params!);
 
     } catch (e) {
       rethrow;
