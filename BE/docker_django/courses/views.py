@@ -144,6 +144,30 @@ class CourseViewSet(viewsets.ViewSet, generics.ListAPIView, generics.CreateAPIVi
             print(e)
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
+    @action(detail=False, methods=['get'], url_path='unpaid-courses')
+    def unpaid_courses(self, request):
+        user = request.user
+        search_query = request.query_params.get('search', '')
+
+        # Lọc các khoá học người dùng **chưa thanh toán**
+        paid_courses = Payment.objects.filter(user=user, status=True).values_list('course_id', flat=True)
+
+        # Lọc khoá học chưa thanh toán, active và theo từ khoá tìm kiếm
+        unpaid_courses = Course.objects.filter(
+            active=True
+        ).exclude(id__in=paid_courses)
+
+        if search_query:
+            unpaid_courses = unpaid_courses.filter(name__icontains=search_query)
+
+        # Thực hiện phân trang
+        paginator = self.pagination_class()
+        paginated_courses = paginator.paginate_queryset(unpaid_courses, request)
+        serializer = self.get_serializer(paginated_courses, many=True, context={'request': request})
+
+        # Trả về kết quả phân trang
+        return paginator.get_paginated_response(serializer.data)
+
 
 class LessonViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
     queryset = Lesson.objects.filter(active=True)
@@ -176,7 +200,7 @@ class UserViewSet(viewsets.ViewSet, generics.CreateAPIView):
     parser_classes = [parsers.MultiPartParser]
 
     def get_permissions(self):
-        if self.action.__eq__('current_user'):
+        if self.action.__eq__('current_user') | self.action.__eq__('edit'):
             return [permissions.IsAuthenticated()]
         return [permissions.AllowAny()]
 
@@ -230,6 +254,34 @@ class UserViewSet(viewsets.ViewSet, generics.CreateAPIView):
     @action(methods=['get'], url_name='current-users', detail=False)
     def current_user(self, request):
         return Response(serializers.UserSerializer(request.user).data)
+
+    @action(methods=['put'], url_name='edit-user', detail=False)
+    def edit(self, request):
+        user = request.user  # Lấy người dùng hiện tại
+
+        # Các trường muốn chỉnh sửa
+        username = request.data.get('username')
+        phone = request.data.get('phone')
+        firstName = request.data.get('firstName')
+        lastName = request.data.get('lastName')
+        avatar = request.FILES.get('avatar')  # Lấy avatar từ request
+
+        # Cập nhật các trường nếu có
+        if username:
+            user.username = username
+        if phone:
+            user.phone = phone
+        if firstName:
+            user.first_name = firstName
+        if lastName:
+            user.last_name = lastName
+        if avatar:  # Kiểm tra nếu có avatar mới
+            user.avatar = avatar
+
+        # Lưu thông tin đã chỉnh sửa
+        user.save()
+
+        return Response({'message': 'Cập nhật thông tin thành công'}, status=status.HTTP_200_OK)
 
 
 class FirebaseLoginViewSet(viewsets.ViewSet):
@@ -432,6 +484,14 @@ class NoteViewSet(viewsets.ViewSet):
             return Response({"note": serializer.data}, status=status.HTTP_200_OK)
         except Note.DoesNotExist:
             return Response({"note": None}, status=status.HTTP_200_OK)
+
+    def destroy(self, request, pk=None):
+        try:
+            note = Note.objects.get(pk=pk, user=request.user)
+            note.delete()
+            return Response({"message": "Đã xóa ghi chú"}, status=status.HTTP_204_NO_CONTENT)
+        except Note.DoesNotExist:
+            return Response({"error": "Không tìm thấy ghi chú"}, status=status.HTTP_404_NOT_FOUND)
 
 
 def successed(request):
