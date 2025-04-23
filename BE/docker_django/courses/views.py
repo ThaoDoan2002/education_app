@@ -105,7 +105,7 @@ class CourseViewSet(viewsets.ViewSet, generics.ListAPIView, generics.CreateAPIVi
     pagination_class = paginators.CoursePaginator
 
     def get_permissions(self):
-        if self.action in ['paid_courses', 'lessons']:
+        if self.action in ['paid_courses', 'lessons','unpaid_courses']:
             return [permissions.IsAuthenticated()]
         return [permissions.AllowAny()]
 
@@ -255,30 +255,16 @@ class UserViewSet(viewsets.ViewSet, generics.CreateAPIView):
     def current_user(self, request):
         return Response(serializers.UserSerializer(request.user).data)
 
-    @action(methods=['put'], url_name='edit-user', detail=False)
+    @action(methods=['patch'], url_name='edit-user', detail=False)
     def edit(self, request):
-        user = request.user  # Lấy người dùng hiện tại
+        user = request.user
 
-        # Các trường muốn chỉnh sửa
-        username = request.data.get('username')
-        phone = request.data.get('phone')
-        firstName = request.data.get('firstName')
-        lastName = request.data.get('lastName')
-        avatar = request.FILES.get('avatar')  # Lấy avatar từ request
+        avatar = request.FILES.get('avatar')
 
-        # Cập nhật các trường nếu có
-        if username:
-            user.username = username
-        if phone:
-            user.phone = phone
-        if firstName:
-            user.first_name = firstName
-        if lastName:
-            user.last_name = lastName
-        if avatar:  # Kiểm tra nếu có avatar mới
+        if avatar:
             user.avatar = avatar
 
-        # Lưu thông tin đã chỉnh sửa
+
         user.save()
 
         return Response({'message': 'Cập nhật thông tin thành công'}, status=status.HTTP_200_OK)
