@@ -74,7 +74,7 @@ class LessonSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'password', 'email', 'phone', 'first_name', 'last_name']
+        fields = ['id', 'username', 'password', 'email', 'phone', 'first_name', 'last_name','avatar']
         extra_kwargs = {
             'password': {
                 'write_only': True
