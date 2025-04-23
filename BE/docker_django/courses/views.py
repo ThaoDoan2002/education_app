@@ -273,6 +273,8 @@ class UserViewSet(viewsets.ViewSet, generics.CreateAPIView):
 class FirebaseLoginViewSet(viewsets.ViewSet):
     def create(self, request):
         id_token = request.data.get('idToken')
+        print('--------------------')
+        print(id_token)
         if not id_token:
             return Response({'error': 'Missing idToken'}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -314,6 +316,8 @@ class FirebaseLoginViewSet(viewsets.ViewSet):
             }, status=status.HTTP_200_OK)
 
         except Exception as e:
+            print('---------------------------')
+            print(e)
             return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -423,8 +427,7 @@ class SaveDeviceTokenView(viewsets.ViewSet):
             token=token,
             defaults={'user': user, 'platform': platform}
         )
-        print(token)
-        print(platform)
+
 
         return Response({'message': 'Token saved'})
 
