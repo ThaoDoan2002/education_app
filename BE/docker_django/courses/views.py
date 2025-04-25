@@ -405,7 +405,7 @@ class VideoViewSet(viewsets.ViewSet, generics.CreateAPIView):
     def notes(self, request, pk=None):
         video = self.get_object()
         user = request.user
-        notes = Note.objects.filter(video=video, user=user)
+        notes = Note.objects.filter(video=video, user=user).order_by('timestamp')
         serializer = NoteSerializer(notes, many=True)
         return Response(serializer.data)
 
