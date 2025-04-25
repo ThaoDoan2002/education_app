@@ -30,7 +30,6 @@ class StripeCheckoutViewSet(viewsets.ViewSet):
             payment_exists = Payment.objects.filter(user_id=user_id, course_id=pk, status=True).exists()
 
             if payment_exists:
-                print('--------------------')
                 return Response(
                     {'error': 'Bạn đã mua khóa học này rồi.'},
                     status=status.HTTP_400_BAD_REQUEST
@@ -62,8 +61,6 @@ class StripeCheckoutViewSet(viewsets.ViewSet):
             return Response({'checkout_url': session.url}, status=status.HTTP_200_OK)
 
         except Exception as e:
-            print('errorrrrrrrrrrrrrrrr')
-            print(e)
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -85,7 +82,6 @@ def stripe_webhook(request):
 
     # Xử lý sự kiện thanh toán thành công
     if event['type'] == 'checkout.session.completed':
-        print('donnnnnnnnnnnnnnnnnnnnnnnnne');
         session = event['data']['object']
 
         # Lấy metadata
@@ -106,8 +102,6 @@ def stripe_webhook(request):
         for token in device_tokens:
             send_delayed_push_notification.delay(token, "Thanh toán thành công",
                                                  f"Bạn đã đăng ký thành công khóa học {course.name}!")
-
-
 
 
     return JsonResponse({'status': 'success'})
