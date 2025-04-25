@@ -3,6 +3,7 @@ from django.urls import path, include
 from rest_framework import routers
 from courses import views
 from .stripe_utils import StripeCheckoutViewSet,stripe_webhook
+from .views import SendOtpView, VerifyOtpView, RegisterView
 
 router = routers.DefaultRouter()
 router.register('categories', views.CategoryViewSet, basename='categories')
@@ -16,6 +17,12 @@ router.register('request-reset-password', views.ResetPasswordRequestViewSet, bas
 router.register('reset-password', views.ResetPasswordConfirmViewSet, basename='reset-password')
 router.register('save-device-token', views.SaveDeviceTokenView, basename='save-device-token')
 router.register('notes', views.NoteViewSet, basename='notes')
+router.register('send-otp', views.SendOtpView, basename='send-otp')
+router.register('verify-otp', views.VerifyOtpView, basename='verify-otp')
+router.register('register-info', views.RegisterView, basename='register-info')
+
+
+
 
 
 urlpatterns = [
@@ -23,4 +30,5 @@ urlpatterns = [
     path('success/', views.successed, name="success"),
     path('cancel/', views.cancelled, name="cancel"),
     path('webGoHooks/', stripe_webhook, name='stripe_webhook'),
+
 ]

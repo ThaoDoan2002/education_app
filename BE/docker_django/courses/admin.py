@@ -7,7 +7,6 @@ from django.core.files.uploadedfile import InMemoryUploadedFile, TemporaryUpload
 from django.db.models import F, Sum, ExpressionWrapper
 from django.template.response import TemplateResponse
 
-
 from .forms import RevenueFilterForm
 from .models import Category, Course, Lesson, User, Video, Payment, VideoTimeline
 from .tasks import upload_video_to_s3
@@ -15,7 +14,7 @@ from django.urls import path
 
 
 class CoursesAdminSite(admin.AdminSite):
-    site_header = "starLight"
+    site_header = "StarLight"
 
     def get_urls(self):
         return [
@@ -26,29 +25,67 @@ class CoursesAdminSite(admin.AdminSite):
         form = RevenueFilterForm(request.GET or None)
         payments = Payment.objects.filter(status=True)
 
+        # Kiểm tra xem form có hợp lệ không
         if form.is_valid():
             course = form.cleaned_data.get('course')
             time_filter = form.cleaned_data.get('time_filter')
 
-            if course:
+            if course != '' and time_filter == '':
+                # Thống kê theo tên khóa học khi chỉ chọn khóa học
                 payments = payments.filter(course=course)
+                revenue_data = payments.values('course__name').annotate(
+                    total_revenue=Sum('course__price')
+                ).order_by('course__name')
+                periods = [data['course__name'] for data in revenue_data]
+                revenues = [data['total_revenue'] for data in revenue_data]
 
-            # Lọc theo thời gian
-            if time_filter == 'month':
-                payments = payments.annotate(period=F('created_date__month'))
-            elif time_filter == 'year':
-                payments = payments.annotate(period=F('created_date__year'))
+            elif time_filter != '' and course is None:
+                # Thống kê theo thời gian khi chỉ chọn thời gian
+                if time_filter == 'month':
+                    # Lọc theo tháng và năm
+                    payments = payments.annotate(year=F('created_date__year'), month=F('created_date__month'))
+                    revenue_data = payments.values('year', 'month').annotate(
+                        total_revenue=Sum('course__price')
+                    ).order_by('year', 'month')  # Thống kê theo năm và tháng
+                    periods = [f"{data['month']}/{data['year']}" for data in revenue_data]
+                    revenues = [data['total_revenue'] for data in revenue_data]
 
-            # Tính tổng doanh thu theo period
-            revenue_data = payments.values('period').annotate(
-                total_revenue=Sum('course__price')
-            ).order_by('period')
+                elif time_filter == 'year':
+                    # Thống kê theo năm
+                    payments = payments.annotate(year=F('created_date__year'))
+                    revenue_data = payments.values('year').annotate(
+                        total_revenue=Sum('course__price')
+                    ).order_by('year')  # Thống kê theo năm
+                    periods = [data['year'] for data in revenue_data]
+                    revenues = [data['total_revenue'] for data in revenue_data]
 
-            print(list(revenue_data))  # Kiểm tra cấu trúc của revenue_data
+            # Nếu chọn cả khóa học và thời gian, thống kê theo cả hai
+            elif course != '' and time_filter != '':
+                if time_filter == 'month':
+                    # Lọc theo tháng và năm
+                    payments = payments.annotate(year=F('created_date__year'), month=F('created_date__month'))
+                    payments = payments.filter(course=course)  # Thêm điều kiện khóa học
+                    revenue_data = payments.values('year', 'month').annotate(
+                        total_revenue=Sum('course__price')
+                    ).order_by('year', 'month')  # Thống kê theo cả khóa học và thời gian
+                    periods = [f"{data['month']}/{data['year']}" for data in revenue_data]
+                    revenues = [data['total_revenue'] for data in revenue_data]
 
-            # Lấy dữ liệu period và revenue
-            periods = [data['period'] for data in revenue_data]
-            revenues = [data['total_revenue'] for data in revenue_data]
+                elif time_filter == 'year':
+                    # Thống kê theo năm và khóa học
+                    payments = payments.annotate(year=F('created_date__year'))
+                    payments = payments.filter(course=course)  # Thêm điều kiện khóa học
+                    revenue_data = payments.values('year').annotate(
+                        total_revenue=Sum('course__price')
+                    ).order_by('year')  # Thống kê theo cả khóa học và thời gian
+                    periods = [data['year'] for data in revenue_data]
+                    revenues = [data['total_revenue'] for data in revenue_data]
+
+            # Nếu không chọn khóa học và không chọn thời gian
+            else:
+                periods = []
+                revenues = []
+
         else:
             periods = []
             revenues = []
@@ -60,7 +97,6 @@ class CoursesAdminSite(admin.AdminSite):
         }
         return TemplateResponse(request, 'admin/stats.html', context)
 
-
 admin_site = CoursesAdminSite(name='myapp')
 
 
@@ -70,11 +106,8 @@ class LessonInlineAdmin(admin.StackedInline):
     fk_name = 'course'
 
 
-
 class CourseAdmin(admin.ModelAdmin):
-    inlines = [LessonInlineAdmin ]
-
-
+    inlines = [LessonInlineAdmin]
 
 
 class UserAdmin(admin.ModelAdmin):
@@ -96,7 +129,7 @@ class VideoAdmin(admin.ModelAdmin):
         # Kiểm tra và xử lý upload video
         if 'url' in request.FILES:
             video_file = request.FILES['url']
-            temp_dir = '/app/temp_dir'   # Thay đổi đường dẫn tới thư mục tạm
+            temp_dir = '/app/temp_dir'  # Thay đổi đường dẫn tới thư mục tạm
 
             # Tạo thư mục tạm nếu chưa tồn tại
             if not os.path.exists(temp_dir):
@@ -124,4 +157,3 @@ admin_site.register(Lesson)
 admin_site.register(User)
 admin_site.register(Payment)
 admin_site.register(VideoTimeline)
-

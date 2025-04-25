@@ -1,12 +1,11 @@
 {% extends 'admin/base_site.html' %}
 
 {% block content %}
- <h1>Thống kê doanh thu</h1>
 
   <!-- Form lọc dữ liệu -->
-  <form method="get" action="{% url 'admin:course-stats' %}">
-      {{ form.as_p }}
-      <button type="submit" class="button">Lọc dữ liệu</button>
+  <form method="get" action="{% url 'admin:course-stats' %}" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; width: 100%; margin: 0 auto;">
+    {{ form.as_p }}
+    <button type="submit" class="button" style="margin-top: 20px;">Lọc dữ liệu</button>
   </form>
 
   <!-- Biểu đồ doanh thu -->
@@ -28,21 +27,55 @@
             }]
         },
         options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            },
+            responsive: true,
             plugins: {
                 legend: {
                     position: 'top',
+                    labels: {
+                        color: 'rgba(0, 0, 0, 0.7)'  // Màu chữ của legend
+                    }
                 },
                 title: {
                     display: true,
-                    text: 'Doanh thu theo thời gian'
+                    font: {
+                        size: 18,
+                        family: 'Arial',  // Chọn font chữ
+                        weight: 'bold'
+                    },
+                    color: 'rgba(0, 0, 0, 0.8)'  // Màu chữ của tiêu đề
+                }
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Thời gian',
+                        font: {
+                            size: 14
+                        },
+                        color: 'rgba(0, 0, 0, 0.8)'  // Màu chữ của trục X
+                    },
+                    ticks: {
+                        color: 'rgba(0, 0, 0, 0.8)'  // Màu chữ của các đơn vị trên trục X
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Doanh thu (VNĐ)',
+                        font: {
+                            size: 14
+                        },
+                        color: 'rgba(0, 0, 0, 0.8)'  // Màu chữ của trục Y
+                    },
+                    ticks: {
+                        color: 'rgba(0, 0, 0, 0.8)'  // Màu chữ của các đơn vị trên trục Y
+                    }
                 }
             }
         }
     });
   </script>
+
 {% endblock %}

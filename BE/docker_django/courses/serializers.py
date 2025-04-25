@@ -1,4 +1,4 @@
-from courses.models import Category, Course, Lesson, User, Video, Payment, DeviceToken, Note, VideoTimeline
+from courses.models import Category, Course, Lesson, User, Video, Payment, DeviceToken, Note, VideoTimeline, EmailOTP
 from rest_framework import serializers
 
 
@@ -118,3 +118,34 @@ class NoteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Note
         fields = ['id', 'user', 'video', 'content', 'timestamp']
+
+
+class RegisterSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    username = serializers.CharField()
+    first_name = serializers.CharField()
+    last_name = serializers.CharField()
+    phone = serializers.CharField()
+    password = serializers.CharField(write_only=True)
+
+    def validate_email(self, email):
+        try:
+            otp_obj = EmailOTP.objects.get(email=email, is_verified=True)
+        except EmailOTP.DoesNotExist:
+            raise serializers.ValidationError("Email chưa được xác thực.")
+        return email
+
+    def validate_username(self, username):
+        if User.objects.filter(username=username).exists():
+            raise serializers.ValidationError("Username đã tồn tại.")
+        return username
+
+    def create(self, validated_data):
+        return User.objects.create_user(
+            email=validated_data["email"],
+            username=validated_data["username"],
+            first_name=validated_data["first_name"],
+            last_name=validated_data["last_name"],
+            phone=validated_data["phone"],
+            password=validated_data["password"]
+        )

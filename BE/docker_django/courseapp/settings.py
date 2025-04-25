@@ -247,13 +247,13 @@ ADMIN_EMAIL = '2151013090thao@ou.edu.vn'  # Thay bằng email của admin
 
 JAZZMIN_SETTINGS = {
     # title of the window (Will default to current_admin_site.site_title if absent or None)
-    "site_title": "BrightFuture Admin",
+    "site_title": "StarLight Admin",
 
     # Title on the login screen (19 chars max) (defaults to current_admin_site.site_header if absent or None)
-    "site_header": "BrightFuture",
+    "site_header": "StarLight",
 
     # Title on the brand (19 chars max) (defaults to current_admin_site.site_header if absent or None)
-    "site_brand": "BrightFuture",
+    "site_brand": "StarLight",
 
     # Logo to use for your site, must be present in static files, used for brand on top left
     "site_logo": "logo/star.png",
@@ -265,14 +265,14 @@ JAZZMIN_SETTINGS = {
     "site_icon": None,
 
     # Welcome text on the login screen
-    "welcome_sign": "Welcome to the BrightFuture",
+    "welcome_sign": "Welcome to the StarLight",
 
     # Copyright on the footer
     "copyright": "ThaoDoan",
 
     # List of model admins to search from the search bar, search bar omitted if excluded
     # If you want to use a single search field you dont need to use a list, you can use a simple string
-    "search_model": ["courses.User", "courses.Group"],
+    "search_model": ["courses.User"],
 
     ############
     # Top Menu #
@@ -289,7 +289,16 @@ JAZZMIN_SETTINGS = {
 
         # App with dropdown menu to all its models pages (Permissions checked against models)
         {"app": "courses"},
+
+        {
+            "name": "Thống kê",
+            "url": "/admin/course-stats/",  # hoặc dùng reverse name nếu có
+            "icon": "fa-solid fa-chart-line",
+            "permissions": ["courses.view_course"]  # tuỳ quyền bạn muốn kiểm tra
+        },
     ],
+
+
 
     #############
     # User Menu #
@@ -325,7 +334,9 @@ JAZZMIN_SETTINGS = {
 
         "courses.category": "fa-solid fa-icons",
         "courses.video": "fa-solid fa-video",
-        "courses.lesson": "fa-solid fa-file-pen"
+        "courses.lesson": "fa-solid fa-file-pen",
+        "courses.payment": "fa-solid fa-credit-card",
+        "courses.videotimeline": "fa-solid fa-stream"
     },
     # Icons that are used when one is not manually specified
     "default_icon_parents": "fas fa-chevron-circle-right",

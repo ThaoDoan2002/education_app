@@ -26,10 +26,13 @@ from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
 from rest_framework.permissions import IsAuthenticated
 import requests
+from rest_framework.views import APIView
+import random
 
 from . import perms
-from .models import Category, Course, Lesson, User, Video, Payment, DeviceToken, Note
-from .serializers import VideoSerializer, CourseSerializer, DeviceTokenSerializer, LessonSerializer, NoteSerializer
+from .models import Category, Course, Lesson, User, Video, Payment, DeviceToken, Note, EmailOTP
+from .serializers import VideoSerializer, CourseSerializer, DeviceTokenSerializer, LessonSerializer, NoteSerializer, \
+    RegisterSerializer
 
 
 class CategoryViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView):
@@ -323,7 +326,7 @@ class ResetPasswordRequestViewSet(viewsets.ViewSet):
             # Link gốc mà app Flutter xử lý
             deep_link = f"{settings.URL}/reset-password?uid={uid}&token={token}"
 
-            # Gửi yêu cầu tạo Dynamic Link ngắn
+            # Gửi yêu cầu tạo Dynamic Link
             firebase_api_key = 'AIzaSyC-cbQLVI5dXsfxGCEdRvBhiV6aAY2ov3E'
             firebase_url = f"https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key={firebase_api_key}"
             payload = {
@@ -472,6 +475,54 @@ class NoteViewSet(viewsets.ViewSet):
             return Response({"message": "Đã xóa ghi chú"}, status=status.HTTP_204_NO_CONTENT)
         except Note.DoesNotExist:
             return Response({"error": "Không tìm thấy ghi chú"}, status=status.HTTP_404_NOT_FOUND)
+
+
+class SendOtpView(viewsets.ViewSet):
+    def create(self, request):
+        email = request.data.get("email")
+        otp = f"{random.randint(100000, 999999)}"
+
+        EmailOTP.objects.update_or_create(
+            email=email,
+            defaults={"otp_code": otp, "created_at": timezone.now(), "is_verified": False}
+        )
+
+        # Gửi email
+        send_mail(
+            "Mã OTP xác nhận",
+            f"Mã OTP của bạn là: {otp}",
+            "your_email@example.com",
+            [email],
+            fail_silently=False,
+        )
+
+        return Response({"message": "Mã OTP đã được gửi"}, status=status.HTTP_200_OK)
+
+
+class VerifyOtpView(viewsets.ViewSet):
+    def create(self, request):
+        email = request.data.get("email")
+        otp = request.data.get("otp")
+
+        try:
+            otp_obj = EmailOTP.objects.get(email=email, otp_code=otp)
+            if otp_obj.is_valid():
+                otp_obj.is_verified = True
+                otp_obj.save()
+                return Response({"message": "Xác thực thành công"}, status=status.HTTP_200_OK)
+            else:
+                return Response({"error": "Mã OTP đã hết hạn"}, status=status.HTTP_400_BAD_REQUEST)
+        except EmailOTP.DoesNotExist:
+            return Response({"error": "Mã OTP không hợp lệ"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class RegisterView(viewsets.ViewSet):
+    def create(self, request):
+        serializer = RegisterSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "Đăng ký thành công!"})
+        return Response(serializer.errors, status=400)
 
 
 def successed(request):
