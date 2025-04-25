@@ -27,11 +27,6 @@ from django.core.mail import send_mail
 from rest_framework.permissions import IsAuthenticated
 import requests
 
-
-
-
-
-
 from . import perms
 from .models import Category, Course, Lesson, User, Video, Payment, DeviceToken, Note
 from .serializers import VideoSerializer, CourseSerializer, DeviceTokenSerializer, LessonSerializer, NoteSerializer
@@ -98,14 +93,13 @@ class CategoryViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveA
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
-
 class CourseViewSet(viewsets.ViewSet, generics.ListAPIView, generics.CreateAPIView, generics.RetrieveAPIView):
     queryset = Course.objects.filter(active=True)
     serializer_class = serializers.CourseSerializer
     pagination_class = paginators.CoursePaginator
 
     def get_permissions(self):
-        if self.action in ['paid_courses', 'lessons','unpaid_courses']:
+        if self.action in ['paid_courses', 'lessons', 'unpaid_courses']:
             return [permissions.IsAuthenticated()]
         return [permissions.AllowAny()]
 
@@ -225,7 +219,6 @@ class UserViewSet(viewsets.ViewSet, generics.CreateAPIView):
                 return Response({'error': 'Email chưa được xác minh'}, status=400)
 
             if User.objects.filter(username=username).exists():
-
                 return Response({'error': 'Username đã được sử dụng'}, status=400)
 
             if User.objects.filter(phone=phone).exists():
@@ -236,7 +229,7 @@ class UserViewSet(viewsets.ViewSet, generics.CreateAPIView):
                 defaults={
                     'email': email,
                     'username': username,
-                    'password':  make_password(password),
+                    'password': make_password(password),
                     'phone': phone,
                     'first_name': firstName,
                     'last_name': lastName
@@ -264,7 +257,6 @@ class UserViewSet(viewsets.ViewSet, generics.CreateAPIView):
         if avatar:
             user.avatar = avatar
 
-
         user.save()
 
         return Response({'message': 'Cập nhật thông tin thành công'}, status=status.HTTP_200_OK)
@@ -273,8 +265,6 @@ class UserViewSet(viewsets.ViewSet, generics.CreateAPIView):
 class FirebaseLoginViewSet(viewsets.ViewSet):
     def create(self, request):
         id_token = request.data.get('idToken')
-        print('--------------------')
-        print(id_token)
         if not id_token:
             return Response({'error': 'Missing idToken'}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -316,9 +306,7 @@ class FirebaseLoginViewSet(viewsets.ViewSet):
             }, status=status.HTTP_200_OK)
 
         except Exception as e:
-            print('---------------------------')
-            print(e)
-            return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'detail': str(e)}, status=status.HTTP_200_OK)
 
 
 class ResetPasswordRequestViewSet(viewsets.ViewSet):
@@ -331,12 +319,12 @@ class ResetPasswordRequestViewSet(viewsets.ViewSet):
         if user:
             uid = urlsafe_base64_encode(force_bytes(user.pk))
             token = default_token_generator.make_token(user)
-
+            print(settings.URL)
             # Link gốc mà app Flutter xử lý
             deep_link = f"{settings.URL}/reset-password?uid={uid}&token={token}"
 
             # Gửi yêu cầu tạo Dynamic Link ngắn
-            firebase_api_key = settings.FIREBASE_API_KEY
+            firebase_api_key = 'AIzaSyC-cbQLVI5dXsfxGCEdRvBhiV6aAY2ov3E'
             firebase_url = f"https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key={firebase_api_key}"
             payload = {
                 "dynamicLinkInfo": {
@@ -350,12 +338,15 @@ class ResetPasswordRequestViewSet(viewsets.ViewSet):
                     }
                 }
             }
+
             response = requests.post(firebase_url, json=payload)
             if response.status_code == 200:
                 short_link = response.json().get("shortLink")
-            else:
-                return Response({"message": "Failed to generate reset link"}, status=500)
 
+            if response.status_code != 200:
+                print(f"Error Code: {response.status_code}")
+                print(f"Response: {response.json()}")
+                return Response({"message": "Failed to generate reset link"}, status=500)
             # Gửi email
             send_mail(
                 "Reset your password",
@@ -366,7 +357,6 @@ class ResetPasswordRequestViewSet(viewsets.ViewSet):
             )
         else:
             return Response({"message": "Email not exists!"}, status=status.HTTP_400_BAD_REQUEST)
-
 
         return Response({"message": "If the email exists, a reset link has been sent."}, status=status.HTTP_200_OK)
 
@@ -394,11 +384,13 @@ class ResetPasswordConfirmViewSet(viewsets.ViewSet):
             return Response({"message": "Invalid token"}, status=status.HTTP_400_BAD_REQUEST)
 
         if user.check_password(new_password):
-            return Response({"message": "New password cannot be the same as the old password"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"message": "New password cannot be the same as the old password"},
+                            status=status.HTTP_400_BAD_REQUEST)
 
         user.set_password(new_password)
         user.save()
         return Response({"message": "Password has been reset"}, status=status.HTTP_200_OK)
+
 
 class VideoViewSet(viewsets.ViewSet, generics.CreateAPIView):
     queryset = Video.objects.all()
@@ -406,14 +398,14 @@ class VideoViewSet(viewsets.ViewSet, generics.CreateAPIView):
     parser_classes = [MultiPartParser]
     permission_classes = [IsAuthenticated]
 
-
-    @action(detail=True, methods=['get'] )
+    @action(detail=True, methods=['get'])
     def notes(self, request, pk=None):
         video = self.get_object()
         user = request.user
         notes = Note.objects.filter(video=video, user=user)
         serializer = NoteSerializer(notes, many=True)
         return Response(serializer.data)
+
 
 class SaveDeviceTokenView(viewsets.ViewSet):
     permission_classes = [IsAuthenticated]
@@ -427,7 +419,6 @@ class SaveDeviceTokenView(viewsets.ViewSet):
             token=token,
             defaults={'user': user, 'platform': platform}
         )
-
 
         return Response({'message': 'Token saved'})
 

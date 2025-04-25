@@ -53,7 +53,7 @@ INSTALLED_APPS = [
 
 ]
 
-URL='https://5fef-14-226-227-175.ngrok-free.app'
+URL='http://thaoit.ddns.net'
 
 
 CORS_ALLOW_ALL_ORIGINS = True
@@ -363,4 +363,3 @@ if not firebase_admin._apps:
     firebase_admin.initialize_app(cred)
 
 
-FIREBASE_API_KEY='e648e129be458c220232d4de7e5be921369b26ae'
