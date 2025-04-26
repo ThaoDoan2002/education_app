@@ -31,7 +31,6 @@ class VideoSerializer(serializers.ModelSerializer):
 
 class VideoDetailSerializer(serializers.ModelSerializer):
     timelines = serializers.SerializerMethodField()
-    notes = serializers.SerializerMethodField()
 
     # Thêm trường timelines
 
@@ -43,13 +42,6 @@ class VideoDetailSerializer(serializers.ModelSerializer):
         timelines = obj.timelines.all().order_by('time_in_seconds')
         return VideoTimelineSerializer(timelines, many=True).data
 
-    def get_notes(self, obj):
-        request = self.context.get('request')
-        user = request.user if request else None
-        if not user or user.is_anonymous:
-            return []
-        notes = obj.notes.filter(user=user)
-        return NoteSerializer(notes, many=True).data
 
 class VideoTimelineSerializer(serializers.ModelSerializer):
     class Meta:
