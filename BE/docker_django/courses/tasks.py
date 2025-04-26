@@ -5,11 +5,13 @@ from celery import shared_task
 import boto3
 from django.core.mail import send_mail
 
-from courses.models import Video, User
+from courses.models import Video, User, DeviceToken
 import time
 
 from django.conf import settings
 from firebase_admin import messaging
+from firebase_admin._messaging_utils import UnregisteredError
+
 
 
 
@@ -92,8 +94,15 @@ def send_delayed_push_notification(token, title, body):
         ),
         token=token
     )
-    response = messaging.send(message)
-    print(f"Push sent to {token}: {response}")
+    try:
+        response = messaging.send(message)
+        print(f"Push sent to {token}: {response}")
+    except UnregisteredError:
+        # Token không còn tồn tại hoặc đã bị thu hồi → xóa khỏi DB
+        DeviceToken.objects.filter(token=token).delete()
+        print(f"Token không hợp lệ, đã xóa: {token}")
+    except Exception as e:
+        print(f"Lỗi khi gửi push đến {token}: {str(e)}")
 
 
 
