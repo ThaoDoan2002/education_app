@@ -8,7 +8,9 @@ import 'package:education_project/features/forget_password/presentation/provider
 import 'package:education_project/features/login/presentation/provider/user_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import '../../../../core/utils/injection_container.dart';
 import '../../domain/usecases/reset_password.dart';
+
 part 'forget_password_provider.g.dart';
 
 @Riverpod(keepAlive: true)
@@ -67,27 +69,15 @@ class ResetPasswordNotifier extends _$ResetPasswordNotifier {
   }
 }
 
-
-final forgetPasswordApiServiceProvider = Provider<ForgotPasswordAPIService>((ref) {
-  final dio = ref.read(dioProvider);
-  return ForgotPasswordAPIService(dio);
+final forgetPasswordApiServiceProvider =
+    Provider<ForgotPasswordAPIService>((ref) {
+  return s1<ForgotPasswordAPIService>();
 });
 
 final forgotPasswordUseCaseProvider = Provider<ForgetPasswordUseCase>((ref) {
-  final dio = Dio();
-  final forgetPasswordApiService = ref.watch(forgetPasswordApiServiceProvider);
-
-  final forgetPassword = ForgotPasswordRepositoryImpl(dio, forgetPasswordApiService);
-  return ForgetPasswordUseCase(forgetPassword);
+  return s1<ForgetPasswordUseCase>();
 });
 
 final resetPasswordUseCaseProvider = Provider<ResetPasswordUseCase>((ref) {
-  final dio = Dio();
-  final forgetPasswordApiService = ref.watch(forgetPasswordApiServiceProvider);
-
-  final forgetPassword = ForgotPasswordRepositoryImpl(dio, forgetPasswordApiService);
-  return ResetPasswordUseCase(forgetPassword);
+  return s1<ResetPasswordUseCase>();
 });
-
-
-

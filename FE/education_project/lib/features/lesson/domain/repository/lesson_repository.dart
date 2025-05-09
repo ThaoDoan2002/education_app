@@ -1,7 +1,9 @@
 
 import 'package:education_project/features/lesson/domain/entities/lesson.dart';
 
+import '../../../../core/resources/data_state.dart';
+
 abstract class LessonRepository {
-  Future<List<LessonEntity>> getLesson(int id);
+  Future<DataState<List<LessonEntity>>> getLesson(int id);
 
 }

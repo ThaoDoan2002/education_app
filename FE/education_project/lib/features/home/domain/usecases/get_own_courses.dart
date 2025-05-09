@@ -1,3 +1,4 @@
+import 'package:education_project/core/resources/data_state.dart';
 import 'package:education_project/core/usecase/usecase.dart';
 import 'package:education_project/features/forget_password/domain/repository/forgot_password_repository.dart';
 import 'package:education_project/features/home/domain/entities/category.dart';
@@ -9,13 +10,13 @@ import 'package:education_project/features/home/domain/repository/course_reposit
 import '../repository/user_info_repository.dart';
 
 
-class GetOwnCoursesUseCase implements UseCase<List<CourseEntity>,void>{
+class GetOwnCoursesUseCase implements UseCase<DataState<List<CourseEntity>>,void>{
   final CourseRepository _courseRepository;
 
   GetOwnCoursesUseCase(this._courseRepository);
 
   @override
-  Future<List<CourseEntity>> call({void params}) async {
+  Future<DataState<List<CourseEntity>>> call({void params}) async {
     try {
       return await _courseRepository.getOwnCourses();
 

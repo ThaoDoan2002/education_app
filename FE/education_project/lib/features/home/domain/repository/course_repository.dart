@@ -1,10 +1,10 @@
-import 'package:education_project/features/home/domain/entities/category.dart';
+import 'package:education_project/core/resources/data_state.dart';
 import 'package:education_project/features/home/domain/entities/course.dart';
 
 abstract class CourseRepository {
-  Future<List<CourseEntity>> getOwnCoursesByCate(int id);
+  Future<DataState<List<CourseEntity>>> getOwnCoursesByCate(int id);
 
-  Future<List<CourseEntity>> getOwnCourses();
+  Future<DataState<List<CourseEntity>>> getOwnCourses();
 
-  Future<List<CourseEntity>> getCoursesByCate(int cateId);
+  Future<DataState<List<CourseEntity>>> getCoursesByCate(int cateId);
 }

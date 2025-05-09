@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:education_project/features/forget_password/presentation/pages/reset_password.dart';
 import 'package:education_project/features/forget_password/presentation/provider/forget_password_provider.dart';
 import 'package:education_project/features/forget_password/presentation/provider/state/forget_password_state.dart';
 import 'package:education_project/features/login/presentation/widgets/button_login_widget.dart';
@@ -54,7 +53,7 @@ class _ForgotPasswordState extends ConsumerState<ForgotPassword> {
       final uid = deepLink.queryParameters['uid'];
       final token = deepLink.queryParameters['token'];
       if (uid != null && token != null && context.mounted) {
-        context.go('/reset-password?uid=$uid&token=$token');
+        context.push('/reset-password?uid=$uid&token=$token');
 
         return true;
       }

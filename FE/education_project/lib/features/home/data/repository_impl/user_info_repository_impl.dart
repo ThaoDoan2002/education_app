@@ -1,9 +1,7 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:education_project/config/storage/token_storage.dart';
-import 'package:education_project/features/forget_password/data/data_sources/forgot_password_api_service.dart';
-import 'package:education_project/features/forget_password/domain/repository/forgot_password_repository.dart';
+import 'package:education_project/core/resources/data_state.dart';
 import 'package:education_project/features/home/data/data_sources/user_info_api_service.dart';
 import 'package:education_project/features/home/data/models/user.dart';
 import 'package:education_project/features/home/domain/entities/user.dart';
@@ -12,30 +10,30 @@ import 'package:education_project/features/home/domain/repository/user_info_repo
 
 
 class UserInfoRepositoryImpl implements UserInfoRepository {
-  final Dio _dio;
   final UserInfoApiService _userInfoApiService;
 
-  UserInfoRepositoryImpl(this._dio, this._userInfoApiService) {
-    // Thêm interceptor để log request và response
-    _dio.interceptors
-        .add(LogInterceptor(responseBody: true, requestBody: true));
-  }
+
+  UserInfoRepositoryImpl(this._userInfoApiService);
+
 
 
   @override
-  Future<UserEntity> getUser() async{
+  Future<DataState<UserEntity>> getUser() async{
     try {
-      TokenStorage storage = TokenStorage();
-      final token = await storage.getToken();
-      final httpResponse = await _userInfoApiService.getUser('Bearer $token');
+
+      final httpResponse = await _userInfoApiService.getUser();
       if (httpResponse.response.statusCode == HttpStatus.ok) {
-        return UserModel.fromJson(httpResponse.response.data);
+        final user = UserModel.fromJson(httpResponse.response.data);
+        return DataSuccess(user);
       } else {
-        throw Exception(
-            'Failed to get user: ${httpResponse.response.statusMessage}');
+        return DataFailed(DioException(
+            error: httpResponse.response.statusMessage,
+            response: httpResponse.response,
+            type: DioExceptionType.badResponse,
+            requestOptions: httpResponse.response.requestOptions));
       }
-    } catch (e) {
-      rethrow;
+    } on DioException catch (e) {
+      return DataFailed(e);
     }
   }
 

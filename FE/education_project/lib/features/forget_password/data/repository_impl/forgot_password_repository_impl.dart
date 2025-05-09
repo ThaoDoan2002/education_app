@@ -8,20 +8,17 @@ import '../../domain/usecases/params/reset_password_param.dart';
 
 
 class ForgotPasswordRepositoryImpl implements ForgotPasswordRepository {
-  final Dio _dio;
+
   final ForgotPasswordAPIService _forgotPasswordAPIService;
 
-  ForgotPasswordRepositoryImpl(this._dio, this._forgotPasswordAPIService) {
-    // Thêm interceptor để log request và response
-    _dio.interceptors
-        .add(LogInterceptor(responseBody: true, requestBody: true));
-  }
+  ForgotPasswordRepositoryImpl(this._forgotPasswordAPIService);
 
 
   @override
-  Future<void> sendEmail(String email) async{
+  Future<void> sendEmail(String email) async {
     try {
-      final httpResponse = await _forgotPasswordAPIService.sendEmail({'email': email});
+      final httpResponse = await _forgotPasswordAPIService.sendEmail(
+          {'email': email});
       if (httpResponse.response.statusCode == HttpStatus.ok) {
         print('OKE');
       } else {
@@ -34,11 +31,12 @@ class ForgotPasswordRepositoryImpl implements ForgotPasswordRepository {
   }
 
   @override
-  Future<void> resetPassword(ResetPasswordBodyParams params) async{
+  Future<void> resetPassword(ResetPasswordBodyParams params) async {
     try {
-      final httpResponse = await _forgotPasswordAPIService.resetPassword({'uid': params.uid,
-        'token': params.token,
-        'new_password': params.password,});
+      final httpResponse = await _forgotPasswordAPIService.resetPassword(
+          {'uid': params.uid,
+            'token': params.token,
+            'new_password': params.password,});
       if (httpResponse.response.statusCode == HttpStatus.ok) {
         print('OKE');
       } else {

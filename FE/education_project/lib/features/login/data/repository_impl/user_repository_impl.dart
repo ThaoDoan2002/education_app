@@ -1,36 +1,31 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:education_project/config/storage/token_storage.dart';
 import 'package:education_project/features/login/data/data_sources/user_api_service.dart';
 import 'package:education_project/features/home/domain/entities/user.dart';
 import 'package:education_project/features/login/domain/repository/user_repository.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-import '../../../../config/storage/token_storage.dart';
 import '../../../../core/resources/data_state.dart';
 
 class UserRepositoryImpl implements UserRepository {
   final UserApiService _userApiService;
-  final TokenStorage _tokenStorage;
 
-  UserRepositoryImpl(this._userApiService, this._tokenStorage);
+  UserRepositoryImpl(this._userApiService);
 
   @override
   Future<DataState<UserEntity>> getCurrentUser() async {
     try {
-      String? token = '';
-      await _tokenStorage.getToken().then((t) {
-        token = t;
-      });
+      final String? token = await TokenStorage().getAccessToken();
       if (token == '') {
         return DataFailed(DioException(
             error: 'No token found', requestOptions: RequestOptions(path: '')));
       }
 
-      final httpResponse = await _userApiService.getCurrentUser(
-          'Bearer ${token!}');
+      final httpResponse = await _userApiService.getCurrentUser();
 
       if (httpResponse.response.statusCode == HttpStatus.ok) {
-        print('${httpResponse.data}');
         return DataSuccess(httpResponse.data);
       } else {
         return DataFailed(DioException(

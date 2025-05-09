@@ -4,6 +4,8 @@ import 'package:education_project/features/home/data/repository_impl/cate_reposi
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../core/resources/data_state.dart';
+import '../../../../core/utils/injection_container.dart';
 import '../../domain/entities/category.dart';
 import '../../domain/usecases/get_cate_by_id.dart';
 
@@ -12,21 +14,20 @@ part 'get_cate_by_ID_provider.g.dart';
 @riverpod
 Future<CategoryEntity?> category(Ref ref, int id) async {
   final getCateByIdUseCase = ref.watch(getCateByIdUseCaseProvider);
-  final category =
+  final result =
       await getCateByIdUseCase.call(params: id); // Fetch category by ID
-  return category;
+  if (result is DataSuccess) {
+    return result.data;
+  } else {
+    throw Exception('Failed to get Category');
+  }
 }
 
-final dioProvider = Provider<Dio>((ref) => Dio());
 
 final cateApiServiceProvider = Provider<CateApiService>((ref) {
-  final dio = ref.read(dioProvider);
-  return CateApiService(dio);
+  return s1<CateApiService>();
 });
 
 final getCateByIdUseCaseProvider = Provider<GetCateByIdUseCase>((ref) {
-  final dio = ref.read(dioProvider);
-  final apiService = ref.read(cateApiServiceProvider);
-  final repository = CateRepositoryImpl(dio, apiService);
-  return GetCateByIdUseCase(repository);
+  return s1<GetCateByIdUseCase>();
 });

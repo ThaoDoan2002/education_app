@@ -10,7 +10,6 @@ abstract class VideoApiService {
   factory VideoApiService(Dio dio, {String baseUrl}) = _VideoApiService;
 
   @GET('/lessons/{id}/video/')
-  Future<HttpResponse<dynamic>> getVideo(@Path('id') int lessonId,
-      @Header('Authorization') String token);
+  Future<HttpResponse<dynamic>> getVideo(@Path('id') int lessonId);
 }
 

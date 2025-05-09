@@ -6,7 +6,7 @@ part of 'get_own_course_by_cate_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$coursesOwnByCateHash() => r'ed0fba18a0e17aa0de6548482713b5c64a5853d8';
+String _$coursesOwnByCateHash() => r'bd8cc48c468d1be530defb6f77d1d2c779562d38';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -34,7 +34,7 @@ class _SystemHash {
 const coursesOwnByCateProvider = CoursesOwnByCateFamily();
 
 /// See also [coursesOwnByCate].
-class CoursesOwnByCateFamily extends Family<AsyncValue<List<CourseEntity>>> {
+class CoursesOwnByCateFamily extends Family<AsyncValue<List<CourseEntity>?>> {
   /// See also [coursesOwnByCate].
   const CoursesOwnByCateFamily();
 
@@ -72,7 +72,7 @@ class CoursesOwnByCateFamily extends Family<AsyncValue<List<CourseEntity>>> {
 }
 
 /// See also [coursesOwnByCate].
-class CoursesOwnByCateProvider extends FutureProvider<List<CourseEntity>> {
+class CoursesOwnByCateProvider extends FutureProvider<List<CourseEntity>?> {
   /// See also [coursesOwnByCate].
   CoursesOwnByCateProvider(
     int id,
@@ -107,7 +107,7 @@ class CoursesOwnByCateProvider extends FutureProvider<List<CourseEntity>> {
 
   @override
   Override overrideWith(
-    FutureOr<List<CourseEntity>> Function(CoursesOwnByCateRef provider) create,
+    FutureOr<List<CourseEntity>?> Function(CoursesOwnByCateRef provider) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -124,7 +124,7 @@ class CoursesOwnByCateProvider extends FutureProvider<List<CourseEntity>> {
   }
 
   @override
-  FutureProviderElement<List<CourseEntity>> createElement() {
+  FutureProviderElement<List<CourseEntity>?> createElement() {
     return _CoursesOwnByCateProviderElement(this);
   }
 
@@ -144,13 +144,14 @@ class CoursesOwnByCateProvider extends FutureProvider<List<CourseEntity>> {
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin CoursesOwnByCateRef on FutureProviderRef<List<CourseEntity>> {
+mixin CoursesOwnByCateRef on FutureProviderRef<List<CourseEntity>?> {
   /// The parameter `id` of this provider.
   int get id;
 }
 
 class _CoursesOwnByCateProviderElement
-    extends FutureProviderElement<List<CourseEntity>> with CoursesOwnByCateRef {
+    extends FutureProviderElement<List<CourseEntity>?>
+    with CoursesOwnByCateRef {
   _CoursesOwnByCateProviderElement(super.provider);
 
   @override

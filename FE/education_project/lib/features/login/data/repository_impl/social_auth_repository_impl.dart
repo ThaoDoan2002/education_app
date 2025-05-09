@@ -1,26 +1,19 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:education_project/config/storage/token_storage.dart';
 import 'package:education_project/features/login/data/data_sources/social_auth_api_service.dart';
 import 'package:education_project/features/login/domain/repository/social_auth_repository.dart';
 import 'package:education_project/features/login/domain/usecases/params/login_param.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-import '../../../../core/constants/constants.dart';
-import '../../domain/repository/auth_repository.dart';
-import '../data_sources/auth_api_service.dart';
+import '../../../../config/storage/token_storage.dart';
+
 
 class SocialAuthRepositoryImpl implements SocialAuthRepository {
-  final Dio _dio;
-  final TokenStorage tokenStorage;
   final SocialAuthAPIService _socialAuthAPIService;
 
-  SocialAuthRepositoryImpl(this._dio, this.tokenStorage,
-      this._socialAuthAPIService) {
-    // Thêm interceptor để log request và response
-    _dio.interceptors
-        .add(LogInterceptor(responseBody: true, requestBody: true));
-  }
+
+  SocialAuthRepositoryImpl(this._socialAuthAPIService);
 
   @override
   Future<void> socialLogin(SocialLoginBodyParams params) async {
@@ -29,13 +22,15 @@ class SocialAuthRepositoryImpl implements SocialAuthRepository {
       await _socialAuthAPIService.socialLogin({"idToken": params.idToken});
       if (httpResponse.response.statusCode == HttpStatus.ok) {
         final token = httpResponse.response.data['access_token'];
-        final expires = httpResponse.response.data['expires_in'];
-        tokenStorage.saveToken(token, expires);
+        final refreshToken = httpResponse.response.data['refresh_token'];
+        await TokenStorage().saveTokens(token, refreshToken);
+
       } else {
         throw Exception(
             'Failed to login: ${httpResponse.response.statusMessage}');
       }
     } catch (e) {
+
       throw Exception(e);
     }
   }

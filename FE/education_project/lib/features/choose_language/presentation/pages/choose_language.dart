@@ -7,18 +7,13 @@ import '../provider/locale_provider.dart';
 import '../widgets/button_widget.dart';
 import '../widgets/gesture_dectector_widget.dart';
 
-class ChooseLanguage extends ConsumerStatefulWidget {
-  const ChooseLanguage({super.key});
+class ChooseLanguage extends ConsumerWidget {
+  ChooseLanguage({super.key});
+
+  String _selectedLanguage = 'en';
 
   @override
-  _ChooseLanguageState createState() => _ChooseLanguageState();
-}
-
-class _ChooseLanguageState extends ConsumerState<ChooseLanguage> {
-  String _selectedLanguage = '';
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Stack(children: [
@@ -32,7 +27,7 @@ class _ChooseLanguageState extends ConsumerState<ChooseLanguage> {
                 children: [
                   Text(
                     AppLocalizations.of(context)!.languages_title,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 22.0,
                       fontWeight: FontWeight.bold,
                       color: Colors.black87,
@@ -52,13 +47,13 @@ class _ChooseLanguageState extends ConsumerState<ChooseLanguage> {
               ),
               GestureDectectorChooseLanguage(
                 onTap: () {
-                  _selectedLanguage = 'Vietnamese';
+                  _selectedLanguage = 'vi';
                   ref
                       .read(localeNotifierProvider.notifier)
                       .setLocale(const Locale('vi'));
                 },
                 selectedLanguage: _selectedLanguage,
-                language: 'Vietnamese',
+                language: 'vi',
                 image: "assets/languages/vn.jpg",
                 text: AppLocalizations.of(context)!.languages_vn,
               ),
@@ -67,13 +62,13 @@ class _ChooseLanguageState extends ConsumerState<ChooseLanguage> {
               ),
               GestureDectectorChooseLanguage(
                 onTap: () {
-                  _selectedLanguage = 'English';
+                  _selectedLanguage = 'en';
                   ref
                       .read(localeNotifierProvider.notifier)
                       .setLocale(const Locale('en'));
                 },
                 selectedLanguage: _selectedLanguage,
-                language: 'English',
+                language: 'en',
                 image: "assets/languages/en.jpg",
                 text: AppLocalizations.of(context)!.languages_en,
               ),
@@ -89,7 +84,7 @@ class _ChooseLanguageState extends ConsumerState<ChooseLanguage> {
               text: AppLocalizations.of(context)!.languages_btn,
               my_function: () {
                 context.go('/boarding');
-                },
+              },
             ),
           ),
         ),

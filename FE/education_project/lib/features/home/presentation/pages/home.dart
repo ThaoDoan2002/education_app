@@ -1,16 +1,14 @@
-import 'package:education_project/config/routes/app_routers.dart';
 import 'package:education_project/core/constants/constants.dart';
 import 'package:education_project/features/home/domain/entities/category.dart';
+import 'package:education_project/features/home/presentation/pages/widgets/bottom_show_cate.dart';
 import 'package:education_project/features/home/presentation/provider/get_cate_by_ID_provider.dart';
 import 'package:education_project/features/home/presentation/provider/get_own_course_by_cate_provider.dart';
 import 'package:education_project/features/home/presentation/provider/get_user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-
-import 'bottom_sheet_cate.dart';
 
 class Home extends ConsumerStatefulWidget {
   const Home({super.key});
@@ -20,16 +18,13 @@ class Home extends ConsumerStatefulWidget {
 }
 
 class _HomeState extends ConsumerState<Home> {
-  int selectedID = 1;
+  int selectedID = 3;
   late CategoryEntity cateSelected;
   final List<String> imageList = [
     'assets/home/slide_1.jpg',
     'assets/home/slide_2.jpg',
     'assets/home/slide_3.jpg',
   ];
-
-  int _selectedIndex = 0;  // Lưu trữ index được chọn của BottomNavigationBar
-
   void showCateSelectionModal() async {
     // Hiển thị modal và chờ kết quả (danh mục đã chọn)
     final result = await showModalBottomSheet<int>(
@@ -47,18 +42,6 @@ class _HomeState extends ConsumerState<Home> {
       setState(() {
         selectedID = result!;
       });
-    }
-  }
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-    // Điều hướng đến các trang khác nếu cần
-    if (index == 1) {
-      context.push('/courses');
-    } else if (index == 2) {
-      context.push('/profile');
     }
   }
 
@@ -92,10 +75,10 @@ class _HomeState extends ConsumerState<Home> {
                         ),
                         child: CircleAvatar(
                           radius: 28.0,
-                          backgroundImage: u.avatar != null
-                              ? NetworkImage(u.avatar!)
+                          backgroundImage: u?.avatar != null
+                              ? NetworkImage('$CLOUDINARY_URL${u?.avatar!}')
                               : const AssetImage('assets/home/user.png')
-                          as ImageProvider,
+                                  as ImageProvider,
                         ),
                       ),
                       const SizedBox(width: 15),
@@ -103,7 +86,8 @@ class _HomeState extends ConsumerState<Home> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Xin chào, ${u.lastName} ${u.firstName}',
+                            '${u?.lastName} ${u?.firstName}'.trim().isNotEmpty? 'Xin chào, ${u?.lastName} ${u?.firstName}' :
+                            'Xin chào',
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 19,
@@ -168,27 +152,27 @@ class _HomeState extends ConsumerState<Home> {
                   ),
                   items: imageList
                       .map((item) => Container(
-                    margin: EdgeInsets.all(5),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black26,
-                          blurRadius: 8,
-                          spreadRadius: 2,
-                          offset: Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: Image.asset(
-                        item,
-                        fit: BoxFit.cover,
-                        width: 1000,
-                      ),
-                    ),
-                  ))
+                            margin: EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black26,
+                                  blurRadius: 8,
+                                  spreadRadius: 2,
+                                  offset: Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Image.asset(
+                                item,
+                                fit: BoxFit.cover,
+                                width: 1000,
+                              ),
+                            ),
+                          ))
                       .toList(),
                 ),
                 Padding(
@@ -223,8 +207,7 @@ class _HomeState extends ConsumerState<Home> {
                             child: const Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Icon(Icons.my_library_books_outlined,
-                                    color: Colors.blue),
+                                Icon(FontAwesomeIcons.book, color: Colors.blue),
                                 SizedBox(width: 8),
                                 Text('Các khoá học',
                                     style: TextStyle(color: Colors.black)),
@@ -232,7 +215,9 @@ class _HomeState extends ConsumerState<Home> {
                             ),
                           ),
                           ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              context.push('/my_courses?id=${selectedID}');
+                            },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.white,
                               elevation: 6,
@@ -245,9 +230,9 @@ class _HomeState extends ConsumerState<Home> {
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: const [
-                                Icon(Icons.diamond_outlined,
+                                Icon(FontAwesomeIcons.graduationCap,
                                     color: Colors.blue),
-                                SizedBox(width: 8),
+                                SizedBox(width: 10),
                                 Text('Khoá học của tôi',
                                     style: TextStyle(color: Colors.black)),
                               ],
@@ -275,7 +260,7 @@ class _HomeState extends ConsumerState<Home> {
                             height: 300,
                             child: courses.when(
                               data: (c) {
-                                if (c.isEmpty) {
+                                if (c!.isEmpty) {
                                   return const Center(
                                     child: Text(
                                       'Không có khóa học nào',
@@ -286,7 +271,7 @@ class _HomeState extends ConsumerState<Home> {
 
                                 return ListView.builder(
                                   scrollDirection: Axis.horizontal,
-                                  itemCount: c.length,
+                                  itemCount: c?.length,
                                   itemBuilder: (context, index) {
                                     final course = c[index];
                                     return Padding(
@@ -306,7 +291,7 @@ class _HomeState extends ConsumerState<Home> {
                                           decoration: BoxDecoration(
                                             color: Colors.white,
                                             borderRadius:
-                                            BorderRadius.circular(16),
+                                                BorderRadius.circular(16),
                                             border: Border.all(
                                                 color: Colors.white, width: 1),
                                             boxShadow: [
@@ -322,12 +307,13 @@ class _HomeState extends ConsumerState<Home> {
                                             padding: const EdgeInsets.all(12.0),
                                             child: Column(
                                               crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                                  CrossAxisAlignment.start,
                                               children: [
                                                 ClipRRect(
                                                   borderRadius:
-                                                  BorderRadius.vertical(
-                                                      top: Radius.circular(16)),
+                                                      BorderRadius.vertical(
+                                                          top: Radius.circular(
+                                                              16)),
                                                   child: Image.network(
                                                     '$CLOUDINARY_URL${course.thumbnail}',
                                                     height: 150,
@@ -336,23 +322,25 @@ class _HomeState extends ConsumerState<Home> {
                                                   ),
                                                 ),
                                                 Padding(
-                                                  padding: const EdgeInsets.fromLTRB(
-                                                      8, 4, 8, 4),
+                                                  padding:
+                                                      const EdgeInsets.fromLTRB(
+                                                          8, 4, 8, 4),
                                                   child: Text(
                                                     course.name,
                                                     style: const TextStyle(
                                                       fontWeight:
-                                                      FontWeight.bold,
+                                                          FontWeight.bold,
                                                       fontSize: 22,
                                                     ),
                                                     maxLines: 2,
                                                     overflow:
-                                                    TextOverflow.ellipsis,
+                                                        TextOverflow.ellipsis,
                                                   ),
                                                 ),
                                                 Padding(
-                                                  padding: const EdgeInsets.only(
-                                                      left: 5, right: 4),
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 5, right: 4),
                                                   child: Row(
                                                     children: [
                                                       Icon(
@@ -368,8 +356,8 @@ class _HomeState extends ConsumerState<Home> {
                                                           fontSize: 16,
                                                         ),
                                                         maxLines: 2,
-                                                        overflow:
-                                                        TextOverflow.ellipsis,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
                                                       ),
                                                     ],
                                                   ),
@@ -395,7 +383,6 @@ class _HomeState extends ConsumerState<Home> {
           ),
         ),
       ),
-
     );
   }
 }

@@ -93,25 +93,20 @@ class _ResetPasswordPageState extends ConsumerState<ResetPasswordPage> {
             .read(resetPasswordNotifierProvider.notifier)
             .resetPassword(params);
         final resetPassState = ref.watch(resetPasswordNotifierProvider);
-        // Nếu thành công
+
         if (resetPassState is ResetPasswordDone) {
           setState(() {
             _errorMessage = '';
           });
-
-          await Future.delayed(
-              const Duration(seconds: 200)); // optional, để UX mượt hơn
           context.go('/login');
 
         } else if (resetPassState is ResetPasswordError) {
           setState(() {
             _errorMessage = resetPassState.error!.response?.data['message'];
-
             _enterPassword = '';
             _reEnterPassword = '';
             _passwordController.clear();
             _rePasswordController.clear();
-
 
           });
           FocusScope.of(context).requestFocus(_passwordFocusNode);
@@ -163,7 +158,7 @@ class _ResetPasswordPageState extends ConsumerState<ResetPasswordPage> {
                   height: 10,
                 ),
                 Text(
-                  'Password',
+                  'Mật khẩu',
                   style: TextStyle(fontSize: 16),
                 ),
                 TextFormField(
@@ -261,7 +256,7 @@ class _ResetPasswordPageState extends ConsumerState<ResetPasswordPage> {
                   height: 10,
                 ),
                 Text(
-                  'Email',
+                  'Nhập lại mật khẩu',
                   style: TextStyle(fontSize: 16),
                 ),
                 TextFormField(

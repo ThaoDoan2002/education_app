@@ -14,7 +14,7 @@ class _LessonApiService implements LessonApiService {
     this.baseUrl,
     this.errorLogger,
   }) {
-    baseUrl ??= 'http://222.255.214.228';
+    baseUrl ??= 'http://thaoit.ddns.net';
   }
 
   final Dio _dio;
@@ -24,14 +24,10 @@ class _LessonApiService implements LessonApiService {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<HttpResponse<dynamic>> getLessons(
-    int courseId,
-    String token,
-  ) async {
+  Future<HttpResponse<dynamic>> getLessons(int courseId) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{r'Authorization': token};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<HttpResponse<dynamic>>(Options(
       method: 'GET',

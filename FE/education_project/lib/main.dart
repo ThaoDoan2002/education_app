@@ -10,8 +10,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'config/routes/app_routers.dart';
-import 'config/storage/token_storage.dart';
-import 'core/constants/constants.dart';
 
 void main() async {
   // Đảm bảo Flutter binding đã được khởi tạo trước khi gọi bất kỳ phương thức nào
@@ -36,6 +34,14 @@ class MyApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final locale = ref.watch(localeNotifierProvider);
     return MaterialApp.router(
+      theme: ThemeData(
+        fontFamily: 'Poppins',
+        textTheme: const TextTheme(
+          displayLarge: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+          bodyLarge: TextStyle(fontSize: 16),
+          bodyMedium: TextStyle(fontSize: 14),
+        ),
+      ),
       routerConfig: appRouter,
       localizationsDelegates: const [
         AppLocalizations.delegate,

@@ -1,25 +1,18 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:education_project/config/storage/token_storage.dart';
-import 'package:education_project/features/login/data/data_sources/social_auth_api_service.dart';
 import 'package:education_project/features/login/domain/usecases/params/login_param.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
+import '../../../../config/storage/token_storage.dart';
 import '../../../../core/constants/constants.dart';
 import '../../domain/repository/auth_repository.dart';
 import '../data_sources/auth_api_service.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
-  final Dio _dio;
-  final TokenStorage tokenStorage;
   final AuthAPIService _authApiService;
 
-  AuthRepositoryImpl(this._dio, this._authApiService, this.tokenStorage) {
-    // Thêm interceptor để log request và response
-    _dio.interceptors
-        .add(LogInterceptor(responseBody: true, requestBody: true));
-  }
+  AuthRepositoryImpl(this._authApiService);
 
   @override
   Future<void> login(LoginBodyParams params) async {
@@ -28,8 +21,8 @@ class AuthRepositoryImpl implements AuthRepository {
           CLIENT_SECRET, params.username, params.password);
       if (httpResponse.response.statusCode == HttpStatus.ok) {
         final token = httpResponse.response.data['access_token'];
-        final expires = httpResponse.response.data['expires_in'];
-        tokenStorage.saveToken(token, expires);
+        final refreshToken = httpResponse.response.data['refresh_token'];
+        await TokenStorage().saveTokens(token, refreshToken);
       } else {
         throw Exception(
             'Failed to login: ${httpResponse.response.statusMessage}');
@@ -38,6 +31,4 @@ class AuthRepositoryImpl implements AuthRepository {
       throw Exception(e);
     }
   }
-
-
 }

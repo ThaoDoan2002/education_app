@@ -1,15 +1,18 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:education_project/config/storage/token_storage.dart';
 import 'package:education_project/core/constants/constants.dart';
 import 'package:education_project/features/login/presentation/provider/state/login_state.dart';
 import 'package:education_project/features/login/presentation/widgets/password_login_widget.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../config/storage/token_storage.dart';
+import '../../../../core/utils/injection_container.dart';
+import '../../../home/presentation/provider/get_user_provider.dart';
 import '../../domain/usecases/params/login_param.dart';
 import '../provider/login_provider.dart';
 import '../widgets/button_login_widget.dart';
@@ -24,6 +27,7 @@ class Login extends ConsumerStatefulWidget {
 }
 
 class _LoginState extends ConsumerState<Login> {
+
   final _formKey = GlobalKey<FormState>();
   final FocusNode _passwordFocusNode = FocusNode();
   final FocusNode _usernameFocusNode = FocusNode();
@@ -60,11 +64,8 @@ class _LoginState extends ConsumerState<Login> {
     Future<void> _registerDeviceToken() async {
       try {
         FirebaseMessaging messaging = FirebaseMessaging.instance;
-        print('-------------------');
-        print(messaging);
         String? token = await messaging.getToken();
-        print(token);
-        final tokenoauth = await TokenStorage().getToken();
+        final tokenOauth = await TokenStorage().getAccessToken();
         final Dio dio = Dio();
         if (token != null) {
           await dio.post(
@@ -74,7 +75,7 @@ class _LoginState extends ConsumerState<Login> {
               'platform': Platform.isAndroid ? 'android' : 'ios',
             },
             options: Options(headers: {
-              'Authorization': 'Bearer $tokenoauth', // nếu cần token auth
+              'Authorization': 'Bearer $tokenOauth', // nếu cần token auth
             }),
           );
         }
@@ -115,6 +116,8 @@ class _LoginState extends ConsumerState<Login> {
       if (loginState is LoginDone) {
         errorMessage = '';
         await _registerDeviceToken();
+        final newToken = await TokenStorage().getAccessToken();
+        ref.read(tokenProvider.notifier).state = newToken;
         context.go('/home');
       } else if (loginState is LoginError) {
         setState(() {

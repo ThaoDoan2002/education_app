@@ -8,23 +8,21 @@ import 'package:education_project/features/register/domain/usecases/params/regis
 
 import '../../domain/repository/register_repository.dart';
 
-
-
 class RegisterRepositoryImpl implements RegisterRepository {
-  final Dio _dio;
   final RegisterAPIService _registerAPIService;
 
-  RegisterRepositoryImpl(this._dio, this._registerAPIService) {
-    // Thêm interceptor để log request và response
-    _dio.interceptors
-        .add(LogInterceptor(responseBody: true, requestBody: true));
-  }
+  RegisterRepositoryImpl(this._registerAPIService);
 
   @override
-  Future<void> register(RegisterBodyParams params) async{
+  Future<void> register(RegisterBodyParams params) async {
     try {
-
-      final httpResponse = await _registerAPIService.register(params.fName, params.lName, params.username, params.password, params.phone,params.token);
+      final httpResponse = await _registerAPIService.register(
+          params.fName,
+          params.lName,
+          params.username,
+          params.password,
+          params.phone,
+          params.token);
       if (httpResponse.response.statusCode == HttpStatus.ok) {
         print('OKE');
       } else {
@@ -38,5 +36,4 @@ class RegisterRepositoryImpl implements RegisterRepository {
       rethrow;
     }
   }
-
 }

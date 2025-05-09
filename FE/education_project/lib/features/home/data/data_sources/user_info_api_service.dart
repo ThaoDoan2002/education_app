@@ -11,5 +11,5 @@ abstract class UserInfoApiService {
   factory UserInfoApiService(Dio dio, {String baseUrl}) = _UserInfoApiService;
 
   @GET('/users/current_user/')
-  Future<HttpResponse<dynamic>> getUser(@Header("Authorization") String token);
+  Future<HttpResponse<dynamic>> getUser();
 }

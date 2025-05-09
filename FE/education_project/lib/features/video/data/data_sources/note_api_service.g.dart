@@ -14,7 +14,7 @@ class _NoteApiService implements NoteApiService {
     this.baseUrl,
     this.errorLogger,
   }) {
-    baseUrl ??= 'http://222.255.214.228';
+    baseUrl ??= 'http://thaoit.ddns.net';
   }
 
   final Dio _dio;
@@ -24,14 +24,10 @@ class _NoteApiService implements NoteApiService {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<HttpResponse<dynamic>> createNote(
-    String token,
-    Map<String, dynamic> body,
-  ) async {
+  Future<HttpResponse<dynamic>> createNote(Map<String, dynamic> body) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{r'Authorization': token};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(body);
     final _options = _setStreamType<HttpResponse<dynamic>>(Options(
@@ -57,14 +53,38 @@ class _NoteApiService implements NoteApiService {
   }
 
   @override
-  Future<HttpResponse<dynamic>> getNotesByVideo(
-    int videoId,
-    String token,
-  ) async {
+  Future<HttpResponse<dynamic>> deleteNote(int noteID) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{r'Authorization': token};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<HttpResponse<dynamic>>(Options(
+      method: 'DELETE',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          '/notes/${noteID}/',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        )));
+    final _result = await _dio.fetch(_options);
+    final _value = _result.data;
+    final httpResponse = HttpResponse(_value, _result);
+    return httpResponse;
+  }
+
+  @override
+  Future<HttpResponse<dynamic>> getNotesByVideo(int videoId) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<HttpResponse<dynamic>>(Options(
       method: 'GET',

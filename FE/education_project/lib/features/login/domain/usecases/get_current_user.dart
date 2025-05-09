@@ -11,5 +11,4 @@ class GetCurrentUserUseCase implements UseCase<DataState<UserEntity>, void>{
   Future<DataState<UserEntity>> call({void params}) {
     return _userRepository.getCurrentUser();
   }
-
 }

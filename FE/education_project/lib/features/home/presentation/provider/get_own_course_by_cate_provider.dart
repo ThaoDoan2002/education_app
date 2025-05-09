@@ -6,32 +6,35 @@ import 'package:education_project/features/home/domain/entities/course.dart';
 import 'package:education_project/features/home/domain/usecases/get_cates.dart';
 import 'package:education_project/features/home/domain/usecases/get_own_courses_by_cate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../core/resources/data_state.dart';
+import '../../../../core/utils/injection_container.dart';
 import '../../data/data_sources/cate_api_service.dart';
 import '../../data/repository_impl/cate_repository_impl.dart';
 import '../../domain/usecases/get_user.dart';
 
 part 'get_own_course_by_cate_provider.g.dart';
 
-final dioProvider = Provider<Dio>((ref) => Dio());
 
 final courseApiServiceProvider = Provider<CoursesApiService>((ref) {
-  final dio = ref.read(dioProvider);
-  return CoursesApiService(dio);
+  return s1<CoursesApiService>();
 });
 
 final getOwnCourseUseCaseProvider = Provider<GetOwnCoursesByCateUseCase>((ref) {
-  final dio = ref.read(dioProvider);
-  final apiService = ref.read(courseApiServiceProvider);
-  final repository = CourseRepositoryImpl(dio, apiService);
-  return GetOwnCoursesByCateUseCase(repository);
+  return s1<GetOwnCoursesByCateUseCase>();
 });
 
 @Riverpod(keepAlive: true)
-Future<List<CourseEntity>> coursesOwnByCate(Ref ref, int id) async {
+Future<List<CourseEntity>?> coursesOwnByCate(Ref ref, int id) async {
   final getCourse = ref.read(getOwnCourseUseCaseProvider);
-  return await getCourse.call(params: id);
+  final result = await getCourse.call(params: id);
+  if (result is DataSuccess) {
+    return result.data;
+  } else {
+    throw Exception('Failed to get courses');
+  }
 }
 
 // @Riverpod(keepAlive: true)

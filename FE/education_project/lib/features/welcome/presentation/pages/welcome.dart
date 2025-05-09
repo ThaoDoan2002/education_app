@@ -1,6 +1,10 @@
-import 'package:education_project/auth/auth_service.dart';
+import 'dart:io';
+
+import 'package:dio/dio.dart';
+import 'package:education_project/features/login/presentation/provider/state/login_state.dart';
 import 'package:education_project/features/welcome/presentation/widgets/box_color.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,7 +12,9 @@ import 'package:go_router/go_router.dart';
 import 'package:sign_in_button/sign_in_button.dart';
 
 import '../../../../config/storage/token_storage.dart';
+import '../../../../core/constants/constants.dart';
 import '../../../choose_language/presentation/widgets/button_widget.dart';
+import '../../../home/presentation/provider/get_user_provider.dart';
 import '../../../login/domain/usecases/params/login_param.dart';
 import '../../../login/presentation/provider/login_provider.dart';
 
@@ -52,6 +58,28 @@ class _WelcomeState extends ConsumerState<Welcome> with SingleTickerProviderStat
 
   @override
   Widget build(BuildContext context) {
+    Future<void> _registerDeviceToken() async {
+      try {
+        FirebaseMessaging messaging = FirebaseMessaging.instance;
+        String? token = await messaging.getToken();
+        final tokenOauth = await TokenStorage().getAccessToken();
+        final Dio dio = Dio();
+        if (token != null) {
+          await dio.post(
+            '$BASE_URL/save-device-token/',
+            data: {
+              'token': token,
+              'platform': Platform.isAndroid ? 'android' : 'ios',
+            },
+            options: Options(headers: {
+              'Authorization': 'Bearer $tokenOauth', // nếu cần token auth
+            }),
+          );
+        }
+      } catch (e) {
+        print('Lỗi khi gửi device token: $e');
+      }
+    }
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Color(0xFF004A99),
@@ -167,7 +195,7 @@ class _WelcomeState extends ConsumerState<Welcome> with SingleTickerProviderStat
                           ),
                         ),
                         onPressed: () {
-                          context.push('/register');
+                          context.push('/email');
                         },
                         child: Text(
                           AppLocalizations.of(context)!.welcome_register,
@@ -191,10 +219,22 @@ class _WelcomeState extends ConsumerState<Welcome> with SingleTickerProviderStat
                           try {
                             final userCredential = await _auth.signInWithProvider(googleProvider);
                             final idToken = await userCredential.user?.getIdToken();
+
                             if (idToken != null) {
                               final params = SocialLoginBodyParams(idToken: idToken);
-                              ref.read(socialLoginNotifierProvider.notifier).socialLogin(params);
-                              context.go('/home');
+                              await ref.read(socialLoginNotifierProvider.notifier).socialLogin(params);
+                              final state = ref.read(socialLoginNotifierProvider);
+                              print(state);
+                              if(state is LoginDone){
+                                final newToken = await TokenStorage().getAccessToken();
+                                ref.read(tokenProvider.notifier).state = newToken;
+                                await _registerDeviceToken();
+                                context.go('/home');
+                              }else{
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('Không thể đăng nhập. Vui lòng thử lại.')),
+                                );
+                              }
                             }
                           } catch (e) {
                             print("Error during Google sign-in: $e");

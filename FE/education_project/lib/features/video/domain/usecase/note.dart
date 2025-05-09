@@ -1,10 +1,8 @@
 import 'package:education_project/core/usecase/usecase.dart';
 
-import 'package:education_project/features/video/domain/entity/video.dart';
 import 'package:education_project/features/video/domain/repository/note_repository.dart';
 import 'package:education_project/features/video/domain/usecase/params/note_params.dart';
 
-import '../repository/video_repository.dart';
 
 
 

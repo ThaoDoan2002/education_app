@@ -14,7 +14,7 @@ class _UserApiService implements UserApiService {
     this.baseUrl,
     this.errorLogger,
   }) {
-    baseUrl ??= 'http://222.255.214.228';
+    baseUrl ??= 'http://thaoit.ddns.net';
   }
 
   final Dio _dio;
@@ -24,11 +24,10 @@ class _UserApiService implements UserApiService {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<HttpResponse<UserModel>> getCurrentUser(String token) async {
+  Future<HttpResponse<UserModel>> getCurrentUser() async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{r'Authorization': token};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<HttpResponse<UserModel>>(Options(
       method: 'GET',

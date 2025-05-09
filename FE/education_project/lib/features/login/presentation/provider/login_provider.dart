@@ -4,12 +4,15 @@ import 'package:education_project/features/login/data/data_sources/social_auth_a
 import 'package:education_project/features/login/domain/usecases/params/login_param.dart';
 import 'package:education_project/features/login/presentation/provider/user_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import '../../../../core/utils/injection_container.dart';
 import '../../data/repository_impl/auth_repository_impl.dart';
 import '../../data/repository_impl/social_auth_repository_impl.dart';
 import '../../domain/usecases/login.dart';
 import '../../domain/usecases/social_login.dart';
 import 'state/login_state.dart';
+
 part 'login_provider.g.dart';
 
 @Riverpod(keepAlive: true)
@@ -27,8 +30,6 @@ class LoginNotifier extends _$LoginNotifier {
     try {
       await ref.read(loginUseCaseProvider).call(params: params);
       state = const LoginDone();
-      print('hiiiiiiiiiiiii');
-
     } catch (e) {
       print(e);
       if (e is DioException) {
@@ -71,31 +72,17 @@ class SocialLoginNotifier extends _$SocialLoginNotifier {
 }
 
 final authApiServiceProvider = Provider<AuthAPIService>((ref) {
-  final dio = ref.read(dioProvider);
-  return AuthAPIService(dio);
+  return s1<AuthAPIService>();
 });
 
 final socialAuthApiServiceProvider = Provider<SocialAuthAPIService>((ref) {
-  final dio = ref.read(dioProvider);
-  return SocialAuthAPIService(dio);
+  return s1<SocialAuthAPIService>();
 });
 
 final loginUseCaseProvider = Provider<LoginUseCase>((ref) {
-  final dio = Dio();
-  final tokenStorage = ref.read(tokenStorageProvider);
-  final authApiService = ref.read(authApiServiceProvider);
-
-  final authRepository = AuthRepositoryImpl(dio, authApiService, tokenStorage);
-  return LoginUseCase(authRepository);
+  return s1<LoginUseCase>();
 });
 
 final socialLoginUseCaseProvider = Provider<SocialLoginUseCase>((ref) {
-  final dio = Dio();
-  final tokenStorage = ref.read(tokenStorageProvider);
-  final socialAuthApiService = ref.read(socialAuthApiServiceProvider);
-
-  final socialAuthRepository = SocialAuthRepositoryImpl(dio, tokenStorage, socialAuthApiService );
-  return SocialLoginUseCase(socialAuthRepository);
+  return s1<SocialLoginUseCase>();
 });
-
-

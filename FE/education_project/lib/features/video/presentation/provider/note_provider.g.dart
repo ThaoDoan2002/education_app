@@ -6,7 +6,7 @@ part of 'note_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$notesHash() => r'fa162459792a0f2789a22a356aa68ab0dbfd78af';
+String _$notesHash() => r'd4d1c72e7f1fbfa78548d8005eaf55939de30784';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -34,7 +34,7 @@ class _SystemHash {
 const notesProvider = NotesFamily();
 
 /// See also [notes].
-class NotesFamily extends Family<AsyncValue<List<NoteEntity>>> {
+class NotesFamily extends Family<AsyncValue<List<NoteEntity>?>> {
   /// See also [notes].
   const NotesFamily();
 
@@ -72,7 +72,7 @@ class NotesFamily extends Family<AsyncValue<List<NoteEntity>>> {
 }
 
 /// See also [notes].
-class NotesProvider extends AutoDisposeFutureProvider<List<NoteEntity>> {
+class NotesProvider extends FutureProvider<List<NoteEntity>?> {
   /// See also [notes].
   NotesProvider(
     int id,
@@ -106,7 +106,7 @@ class NotesProvider extends AutoDisposeFutureProvider<List<NoteEntity>> {
 
   @override
   Override overrideWith(
-    FutureOr<List<NoteEntity>> Function(NotesRef provider) create,
+    FutureOr<List<NoteEntity>?> Function(NotesRef provider) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -123,7 +123,7 @@ class NotesProvider extends AutoDisposeFutureProvider<List<NoteEntity>> {
   }
 
   @override
-  AutoDisposeFutureProviderElement<List<NoteEntity>> createElement() {
+  FutureProviderElement<List<NoteEntity>?> createElement() {
     return _NotesProviderElement(this);
   }
 
@@ -143,20 +143,20 @@ class NotesProvider extends AutoDisposeFutureProvider<List<NoteEntity>> {
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin NotesRef on AutoDisposeFutureProviderRef<List<NoteEntity>> {
+mixin NotesRef on FutureProviderRef<List<NoteEntity>?> {
   /// The parameter `id` of this provider.
   int get id;
 }
 
-class _NotesProviderElement
-    extends AutoDisposeFutureProviderElement<List<NoteEntity>> with NotesRef {
+class _NotesProviderElement extends FutureProviderElement<List<NoteEntity>?>
+    with NotesRef {
   _NotesProviderElement(super.provider);
 
   @override
   int get id => (origin as NotesProvider).id;
 }
 
-String _$noteNotifierHash() => r'48ac6fe04763704e36c9de90f595069a323695f1';
+String _$noteNotifierHash() => r'78fdc5d23186fcece960370ed9ba571e23c0d47f';
 
 /// See also [NoteNotifier].
 @ProviderFor(NoteNotifier)

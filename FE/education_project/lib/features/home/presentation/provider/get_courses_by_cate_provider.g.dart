@@ -6,7 +6,7 @@ part of 'get_courses_by_cate_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$coursesByCateHash() => r'637d7cb8bbcf28e4c45f72f01dac744691f41652';
+String _$coursesByCateHash() => r'7b06185431e728bf6f10066e681e01b42bccbb4f';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -34,7 +34,7 @@ class _SystemHash {
 const coursesByCateProvider = CoursesByCateFamily();
 
 /// See also [coursesByCate].
-class CoursesByCateFamily extends Family<AsyncValue<List<CourseEntity>>> {
+class CoursesByCateFamily extends Family<AsyncValue<List<CourseEntity>?>> {
   /// See also [coursesByCate].
   const CoursesByCateFamily();
 
@@ -72,7 +72,7 @@ class CoursesByCateFamily extends Family<AsyncValue<List<CourseEntity>>> {
 }
 
 /// See also [coursesByCate].
-class CoursesByCateProvider extends FutureProvider<List<CourseEntity>> {
+class CoursesByCateProvider extends FutureProvider<List<CourseEntity>?> {
   /// See also [coursesByCate].
   CoursesByCateProvider(
     int id,
@@ -107,7 +107,7 @@ class CoursesByCateProvider extends FutureProvider<List<CourseEntity>> {
 
   @override
   Override overrideWith(
-    FutureOr<List<CourseEntity>> Function(CoursesByCateRef provider) create,
+    FutureOr<List<CourseEntity>?> Function(CoursesByCateRef provider) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -124,7 +124,7 @@ class CoursesByCateProvider extends FutureProvider<List<CourseEntity>> {
   }
 
   @override
-  FutureProviderElement<List<CourseEntity>> createElement() {
+  FutureProviderElement<List<CourseEntity>?> createElement() {
     return _CoursesByCateProviderElement(this);
   }
 
@@ -144,13 +144,13 @@ class CoursesByCateProvider extends FutureProvider<List<CourseEntity>> {
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin CoursesByCateRef on FutureProviderRef<List<CourseEntity>> {
+mixin CoursesByCateRef on FutureProviderRef<List<CourseEntity>?> {
   /// The parameter `id` of this provider.
   int get id;
 }
 
 class _CoursesByCateProviderElement
-    extends FutureProviderElement<List<CourseEntity>> with CoursesByCateRef {
+    extends FutureProviderElement<List<CourseEntity>?> with CoursesByCateRef {
   _CoursesByCateProviderElement(super.provider);
 
   @override

@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:education_project/config/storage/token_storage.dart';
+import 'package:education_project/core/resources/data_state.dart';
 import 'package:education_project/features/courses/data/data_sources/checkout_api_service.dart';
 import 'package:education_project/features/courses/domain/repository/checkout_repository.dart';
 
@@ -10,20 +10,23 @@ class CheckoutRepositoryImpl implements CheckoutRepository {
 
   CheckoutRepositoryImpl(this._checkoutApiService);
 
+
   @override
-  Future<String> checkoutCourse(int courseId) async {
+  Future<DataState<String>> checkoutCourse(int courseId) async {
     try {
-      final token = await TokenStorage().getToken();
       final httpResponse =
-          await _checkoutApiService.checkoutCourse(courseId, 'Bearer $token');
+          await _checkoutApiService.checkoutCourse(courseId);
       if (httpResponse.response.statusCode == HttpStatus.ok) {
-        return httpResponse.response.data['checkout_url'];
+        return DataSuccess(httpResponse.response.data['checkout_url']);
       } else {
-        throw Exception(
-            'Failed to checkout: ${httpResponse.response.statusMessage}');
+        return DataFailed(DioException(
+            error: httpResponse.response.statusMessage,
+            response: httpResponse.response,
+            type: DioExceptionType.badResponse,
+            requestOptions: httpResponse.response.requestOptions));
       }
-    } catch (e) {
-      rethrow;
+    } on DioException catch (e) {
+      return DataFailed(e);
     }
   }
 }

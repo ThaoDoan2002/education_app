@@ -10,7 +10,6 @@ abstract class LessonApiService {
   factory LessonApiService(Dio dio, {String baseUrl}) = _LessonApiService;
 
   @GET('/courses/{id}/lessons/')
-  Future<HttpResponse<dynamic>> getLessons(@Path('id') int courseId,
-      @Header('Authorization') String token);
+  Future<HttpResponse<dynamic>> getLessons(@Path('id') int courseId);
 }
 

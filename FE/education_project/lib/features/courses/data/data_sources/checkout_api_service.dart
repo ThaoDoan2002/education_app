@@ -10,7 +10,6 @@ abstract class CheckoutApiService {
 
   @POST('/payments/{course_id}/checkout/')
   Future<HttpResponse<dynamic>> checkoutCourse(
-    @Path('course_id') int courseId,
-    @Header('Authorization') String token,
+    @Path('course_id') int courseId
   );
 }

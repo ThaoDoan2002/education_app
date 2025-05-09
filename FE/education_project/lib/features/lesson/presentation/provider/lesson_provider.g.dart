@@ -6,7 +6,7 @@ part of 'lesson_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$lessonsHash() => r'8594077fb1255b99c9a645364d4dc69b2bc17b12';
+String _$lessonsHash() => r'6317f454dbbb185e84ffe9613ad10a1106a689f2';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -34,7 +34,7 @@ class _SystemHash {
 const lessonsProvider = LessonsFamily();
 
 /// See also [lessons].
-class LessonsFamily extends Family<AsyncValue<List<LessonEntity>>> {
+class LessonsFamily extends Family<AsyncValue<List<LessonEntity>?>> {
   /// See also [lessons].
   const LessonsFamily();
 
@@ -72,7 +72,7 @@ class LessonsFamily extends Family<AsyncValue<List<LessonEntity>>> {
 }
 
 /// See also [lessons].
-class LessonsProvider extends FutureProvider<List<LessonEntity>> {
+class LessonsProvider extends FutureProvider<List<LessonEntity>?> {
   /// See also [lessons].
   LessonsProvider(
     int id,
@@ -106,7 +106,7 @@ class LessonsProvider extends FutureProvider<List<LessonEntity>> {
 
   @override
   Override overrideWith(
-    FutureOr<List<LessonEntity>> Function(LessonsRef provider) create,
+    FutureOr<List<LessonEntity>?> Function(LessonsRef provider) create,
   ) {
     return ProviderOverride(
       origin: this,
@@ -123,7 +123,7 @@ class LessonsProvider extends FutureProvider<List<LessonEntity>> {
   }
 
   @override
-  FutureProviderElement<List<LessonEntity>> createElement() {
+  FutureProviderElement<List<LessonEntity>?> createElement() {
     return _LessonsProviderElement(this);
   }
 
@@ -143,12 +143,12 @@ class LessonsProvider extends FutureProvider<List<LessonEntity>> {
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin LessonsRef on FutureProviderRef<List<LessonEntity>> {
+mixin LessonsRef on FutureProviderRef<List<LessonEntity>?> {
   /// The parameter `id` of this provider.
   int get id;
 }
 
-class _LessonsProviderElement extends FutureProviderElement<List<LessonEntity>>
+class _LessonsProviderElement extends FutureProviderElement<List<LessonEntity>?>
     with LessonsRef {
   _LessonsProviderElement(super.provider);
 

@@ -6,11 +6,11 @@ part of 'get_user_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$userHash() => r'dd00e8092657b290e18ca1076c9cc8bf2de870ec';
+String _$userHash() => r'1e95c9cf46404fc5523387713bf74d218fb4100a';
 
 /// See also [user].
 @ProviderFor(user)
-final userProvider = FutureProvider<UserEntity>.internal(
+final userProvider = FutureProvider<UserEntity?>.internal(
   user,
   name: r'userProvider',
   debugGetCreateSourceHash:
@@ -21,6 +21,6 @@ final userProvider = FutureProvider<UserEntity>.internal(
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef UserRef = FutureProviderRef<UserEntity>;
+typedef UserRef = FutureProviderRef<UserEntity?>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

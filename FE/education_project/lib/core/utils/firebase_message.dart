@@ -14,7 +14,7 @@ class FirebaseApi {
 
     // Get FCM token
     final fCMToken = await _firebaseMessaging.getToken();
-    print('----------Token: $fCMToken');
+
 
     // Init local notification
     await _initLocalNotification();

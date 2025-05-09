@@ -1,5 +1,3 @@
-import 'package:dio/dio.dart';
-import 'package:education_project/config/storage/token_storage.dart';
 import 'package:education_project/features/home/presentation/provider/get_cates_provider.dart';
 import 'package:education_project/features/home/presentation/provider/get_courses_by_cate_provider.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +24,7 @@ class _CoursesScreenState extends ConsumerState<CoursesScreen> {
 
     return categories.when(
       data: (cats) => DefaultTabController(
-        length: cats.length,
+        length: cats!.length,
         child: Scaffold(
           appBar: AppBar(
             backgroundColor: Colors.white,
@@ -50,7 +48,7 @@ class _CoursesScreenState extends ConsumerState<CoursesScreen> {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 dividerColor: Colors.transparent,
-                tabs: cats.map((cat) {
+                tabs: cats!.map((cat) {
                   return Tab(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
@@ -69,11 +67,11 @@ class _CoursesScreenState extends ConsumerState<CoursesScreen> {
                 child: Container(
                   color: Colors.grey[100],
                   child: TabBarView(
-                    children: cats.map((cat) {
+                    children: cats!.map((cat) {
                       final courses = ref.watch(coursesByCateProvider(cat.id));
                       return courses.when(
                         data: (courseList) {
-                          if (courseList.isEmpty) {
+                          if (courseList!.isEmpty) {
                             return const Center(
                               child: Text(
                                 'Không có khóa học nào',
@@ -109,12 +107,12 @@ class _CoursesScreenState extends ConsumerState<CoursesScreen> {
                                         padding: const EdgeInsets.all(12.0),
                                         child: Column(
                                           crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                          CrossAxisAlignment.start,
                                           children: [
                                             ClipRRect(
                                               borderRadius:
-                                                  const BorderRadius.vertical(
-                                                      top: Radius.circular(16)),
+                                              const BorderRadius.vertical(
+                                                  top: Radius.circular(16)),
                                               child: Image.network(
                                                 '$CLOUDINARY_URL${course.thumbnail}' ??
                                                     '',
@@ -125,8 +123,8 @@ class _CoursesScreenState extends ConsumerState<CoursesScreen> {
                                             ),
                                             Padding(
                                               padding:
-                                                  const EdgeInsets.fromLTRB(
-                                                      8, 4, 8, 4),
+                                              const EdgeInsets.fromLTRB(
+                                                  8, 4, 8, 4),
                                               child: Text(
                                                 course.name,
                                                 style: const TextStyle(
@@ -143,7 +141,7 @@ class _CoursesScreenState extends ConsumerState<CoursesScreen> {
                                                 children: [
                                                   Icon(Icons.school_outlined,
                                                       color:
-                                                          Colors.blue.shade300,
+                                                      Colors.blue.shade300,
                                                       size: 20),
                                                   const SizedBox(width: 5),
                                                   Text(
@@ -152,7 +150,7 @@ class _CoursesScreenState extends ConsumerState<CoursesScreen> {
                                                     style: const TextStyle(
                                                         fontSize: 16),
                                                     overflow:
-                                                        TextOverflow.ellipsis,
+                                                    TextOverflow.ellipsis,
                                                   ),
                                                 ],
                                               ),
@@ -163,31 +161,31 @@ class _CoursesScreenState extends ConsumerState<CoursesScreen> {
                                                 endIndent: 5),
                                             Row(
                                               mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
+                                              MainAxisAlignment
+                                                  .spaceBetween,
                                               children: [
                                                 Text(
                                                   '${NumberFormat('#,###', 'vi_VN').format(course.price)} VND',
                                                   style: const TextStyle(
                                                       fontWeight:
-                                                          FontWeight.bold,
+                                                      FontWeight.bold,
                                                       fontSize: 21),
                                                 ),
                                                 TextButton(
                                                   onPressed: () async {
                                                     try {
                                                       final checkoutUrl =
-                                                          await ref.read(
-                                                              checkoutProvider(
-                                                                      course.id)
-                                                                  .future);
+                                                      await ref.read(
+                                                          checkoutProvider(
+                                                              course.id)
+                                                              .future);
 
                                                       if (checkoutUrl != null &&
                                                           checkoutUrl
                                                               .isNotEmpty) {
                                                         final encodedUrl =
-                                                            Uri.encodeComponent(
-                                                                checkoutUrl);
+                                                        Uri.encodeComponent(
+                                                            checkoutUrl);
                                                         context.push(
                                                             '/checkout?checkout_url=$encodedUrl&id=${cat.id}');
                                                       } else {
@@ -201,25 +199,25 @@ class _CoursesScreenState extends ConsumerState<CoursesScreen> {
                                                   },
                                                   style: TextButton.styleFrom(
                                                     backgroundColor:
-                                                        const Color(0xFFE0F2FF),
+                                                    const Color(0xFFE0F2FF),
                                                     foregroundColor:
-                                                        Colors.blue,
+                                                    Colors.blue,
                                                     padding: const EdgeInsets
                                                         .symmetric(
                                                         horizontal: 16,
                                                         vertical: 12),
                                                     shape:
-                                                        RoundedRectangleBorder(
+                                                    RoundedRectangleBorder(
                                                       borderRadius:
-                                                          BorderRadius.circular(
-                                                              10),
+                                                      BorderRadius.circular(
+                                                          10),
                                                     ),
                                                   ),
                                                   child: const Text(
                                                     'Thanh toán',
                                                     style: TextStyle(
                                                         fontWeight:
-                                                            FontWeight.bold,
+                                                        FontWeight.bold,
                                                         fontSize: 16),
                                                   ),
                                                 ),
@@ -237,7 +235,7 @@ class _CoursesScreenState extends ConsumerState<CoursesScreen> {
                           );
                         },
                         loading: () =>
-                            const Center(child: CircularProgressIndicator()),
+                        const Center(child: CircularProgressIndicator()),
                         error: (err, _) => Center(child: Text('Lỗi: $err')),
                       );
                     }).toList(),

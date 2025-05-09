@@ -11,5 +11,5 @@ abstract class UserApiService {
   factory UserApiService(Dio dio) = _UserApiService;
 
   @GET('/users/current_user/')
-  Future<HttpResponse<UserModel>> getCurrentUser(@Header("Authorization") String token);
+  Future<HttpResponse<UserModel>> getCurrentUser();
 }

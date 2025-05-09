@@ -10,7 +10,7 @@ class ButtonBlue2 extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        minimumSize: const Size(380, 50),
+        minimumSize: const Size(370, 50),
         backgroundColor: isLoad
             ? Colors
             .grey // Nút chuyển thành màu xám khi loading

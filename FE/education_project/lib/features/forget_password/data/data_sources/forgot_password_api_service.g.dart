@@ -14,7 +14,7 @@ class _ForgotPasswordAPIService implements ForgotPasswordAPIService {
     this.baseUrl,
     this.errorLogger,
   }) {
-    baseUrl ??= 'http://222.255.214.228';
+    baseUrl ??= 'http://thaoit.ddns.net';
   }
 
   final Dio _dio;

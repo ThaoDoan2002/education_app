@@ -1,5 +1,3 @@
-// lib/core/constants/router_constants.dart
-
 class RoutePaths {
   static const root = '/';
   static const languages = '/languages';
@@ -15,6 +13,7 @@ class RoutePaths {
   static const lessons = '/lessons';
   static const video = '/video';
   static const profile = '/profile';
+  static const my_courses = '/my_courses';
 }
 
 class RouteNames {
@@ -22,4 +21,5 @@ class RouteNames {
   static const checkout = 'checkout';
   static const lessons = 'lessons';
   static const video = 'video';
+  static const my_courses = '/my_courses';
 }

@@ -6,6 +6,7 @@ import 'package:education_project/features/register/presentation/provider/state/
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../core/utils/injection_container.dart';
 import '../../data/data_sources/register_api_service.dart';
 import '../../domain/usecases/register.dart';
 part 'register_provider.g.dart';
@@ -41,16 +42,11 @@ class RegisterNotifier extends _$RegisterNotifier {
 
 
 final registerApiServiceProvider = Provider<RegisterAPIService>((ref) {
-  final dio = ref.read(dioProvider);
-  return RegisterAPIService(dio);
+  return s1<RegisterAPIService>();
 });
 
 final registerUseCaseProvider = Provider<RegisterUseCase>((ref) {
-  final dio = Dio();
-  final registerApiService = ref.watch(registerApiServiceProvider);
-
-  final register = RegisterRepositoryImpl(dio, registerApiService);
-  return RegisterUseCase(register);
+  return s1<RegisterUseCase>();
 });
 
 

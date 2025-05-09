@@ -8,6 +8,7 @@ class UserModel extends UserEntity {
     String? email,
     String? avatar,
     String? phone,
+    String? username,
   }) : super(
     id: id,
     firstName: firstName,
@@ -15,6 +16,7 @@ class UserModel extends UserEntity {
     email: email,
     avatar: avatar,
     phone: phone,
+    username: username
   );
 
   factory UserModel.fromJson(Map<String, dynamic> map) {
@@ -23,8 +25,10 @@ class UserModel extends UserEntity {
       firstName: map['first_name'] ?? "", // Chuỗi rỗng cho String nếu null
       lastName: map['last_name'] ?? "",
       email: map['email'] ?? "",
-      avatar: map['avatar'] ?? "https://w7.pngwing.com/pngs/205/731/png-transparent-default-avatar.png",//lấy từ server
+      avatar: map['avatar'] ?? "image/upload/v1745475427/avatar_xsvz3c.png",//lấy từ server
       phone: map['phone'] ?? "",
+      username: map['username'] ?? "",
+
     );
   }
 }

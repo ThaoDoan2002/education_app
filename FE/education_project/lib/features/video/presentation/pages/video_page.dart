@@ -8,7 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:chewie/chewie.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:video_player/video_player.dart';
+import 'package:lottie/lottie.dart';
 
+import '../../data/models/note.dart';
 import '../../domain/usecase/params/note_params.dart';
 import '../provider/note_provider.dart';
 
@@ -28,6 +30,7 @@ class _VideoScreenState extends ConsumerState<VideoScreen> {
   bool _isNotesExpanded = false;
   ChewieController? _chewieController;
   late Future<void> _initializeVideoPlayerFuture;
+  bool _hasShownDialog = false;
 
   @override
   void initState() {
@@ -51,57 +54,37 @@ class _VideoScreenState extends ConsumerState<VideoScreen> {
       );
       setState(() {});
     });
+
+    _videoPlayerController.addListener(() {
+      final isEnded = _videoPlayerController.value.position >=
+          _videoPlayerController.value.duration;
+      final isPlaying = !_videoPlayerController.value.isPlaying;
+
+      if (isEnded && isPlaying && !_hasShownDialog) {
+        _hasShownDialog = true;
+        Future.delayed(Duration(milliseconds: 500), () {
+          _showCompletionDialog(context);
+        });
+      }
+    });
   }
 
-  void _showNoteDialog(BuildContext context) {
-    final TextEditingController noteController = TextEditingController();
-    final TextEditingController timeController = TextEditingController();
-
-    showDialog<void>(
+  void _showCompletionDialog(BuildContext context) {
+    showDialog(
       context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Enter Note and Video Time'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: noteController,
-                decoration: InputDecoration(labelText: 'Enter your note'),
-              ),
-              TextField(
-                controller: timeController,
-                keyboardType: TextInputType.number,
-                decoration:
-                    InputDecoration(labelText: 'Enter video time (in seconds)'),
-              ),
-            ],
+      builder: (context) => AlertDialog(
+        title: Text('Hoàn thành!'),
+        content: SizedBox(
+          height: 150,
+          child: Lottie.asset('assets/animations/success.json'),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text('OK'),
           ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                final String note = noteController.text;
-                final String time = timeController.text;
-
-                if (note.isNotEmpty && time.isNotEmpty) {
-                  // Xử lý ghi chú và thời gian
-                  debugPrint('Note: $note');
-                  debugPrint('Video time: $time');
-                }
-
-                Navigator.of(context).pop(); // Đóng dialog sau khi lưu
-              },
-              child: Text('Save'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Đóng dialog nếu nhấn Cancel
-              },
-              child: Text('Cancel'),
-            ),
-          ],
-        );
-      },
+        ],
+      ),
     );
   }
 
@@ -212,10 +195,10 @@ class _VideoScreenState extends ConsumerState<VideoScreen> {
                               : Icons.arrow_drop_down,
                           color: Colors.black,
                         ),
-                        tilePadding:
-                            EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                        tilePadding: EdgeInsets.symmetric(
+                            horizontal: 16.0, vertical: 8.0),
                         // Điều chỉnh khoảng cách trong ExpansionTile
-                
+
                         onExpansionChanged: (bool expanded) {
                           setState(() {
                             _isExpanded =
@@ -238,8 +221,8 @@ class _VideoScreenState extends ConsumerState<VideoScreen> {
                                       fontWeight: FontWeight.bold),
                                 ),
                                 onTap: () {
-                                  _videoPlayerController
-                                      .seekTo(Duration(seconds: timestamp.time));
+                                  _videoPlayerController.seekTo(
+                                      Duration(seconds: timestamp.time));
                                 },
                               );
                             },
@@ -277,7 +260,6 @@ class _VideoScreenState extends ConsumerState<VideoScreen> {
                             height: _isNotesExpanded ? 200 : 0,
                             // Adjust height based on expansion state
                             child: Scrollbar(
-                              thumbVisibility: true,
                               child: ListView.builder(
                                 shrinkWrap: true,
                                 itemCount: notes?.length,
@@ -289,9 +271,54 @@ class _VideoScreenState extends ConsumerState<VideoScreen> {
                                     title: Text(note!.content),
                                     subtitle: Text(
                                         "🕒 ${_formatDuration(Duration(seconds: note.timestamp.toInt()))}"),
+                                    trailing: IconButton(
+                                      icon:
+                                          Icon(Icons.delete, color: Colors.red),
+                                      onPressed: () async {
+                                        final confirm = await showDialog<bool>(
+                                          context: context,
+                                          builder: (_) => AlertDialog(
+                                            backgroundColor: Colors.white,
+                                            title:
+                                                Text('Xác nhận xoá ghi chú?'),
+                                            content: Text(
+                                                'Bạn có chắc muốn xoá ghi chú này không?'),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () => Navigator.pop(
+                                                    context, false),
+                                                style: TextButton.styleFrom(
+                                                  foregroundColor:
+                                                      Colors.blue, // Màu chữ
+                                                ),
+                                                child: Text('Huỷ'),
+                                              ),
+                                              TextButton(
+                                                onPressed: () => Navigator.pop(
+                                                    context, true),
+                                                style: TextButton.styleFrom(
+                                                  foregroundColor:
+                                                      Colors.blue, // Màu chữ
+                                                ),
+                                                child: Text('Xoá'),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+
+                                        if (confirm == true) {
+                                          await ref
+                                              .read(
+                                                  noteNotifierProvider.notifier)
+                                              .deleteNote(
+                                                  widget.video.id, note.id);
+                                        }
+                                      },
+                                    ),
                                     onTap: () {
                                       _videoPlayerController.seekTo(
-                                        Duration(seconds: note!.timestamp.toInt()),
+                                        Duration(
+                                            seconds: note!.timestamp.toInt()),
                                       );
                                     },
                                   );
@@ -340,12 +367,12 @@ class CustomVideoControls extends ConsumerWidget {
               // Tạm dừng video
               videoController.pause();
 
-              if (notesAsyncValue is AsyncData<List<NoteEntity>>) {
+              if (notesAsyncValue is AsyncData<List<NoteEntity>?>) {
                 final notesList = notesAsyncValue.value;
 
                 // Tìm note có timestamp = currentTime
                 final existingNote = notesList
-                    .where((note) => note.timestamp == currentTime)
+                    ?.where((note) => note.timestamp == currentTime)
                     .toList()
                     .cast<NoteEntity?>()
                     .firstOrNull;

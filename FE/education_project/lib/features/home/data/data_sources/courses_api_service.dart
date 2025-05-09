@@ -12,15 +12,20 @@ abstract class CoursesApiService {
 
   @GET('/categories/{id}/paid-courses/')
   Future<HttpResponse<dynamic>> getOwnCoursesByCate(
-      @Path('id') int cateId,@Header('Authorization') String token);
+      @Path('id') int cateId,);
 
   @GET('/courses/')
-  Future<HttpResponse<dynamic>> getOwnCourses(@Header('Authorization') String token);
+  Future<HttpResponse<dynamic>> getOwnCourses();
 
 
   @GET('/categories/{id}/courses/')
   Future<HttpResponse<dynamic>> getCoursesByCate(
     @Path('id') int cateId,
-    @Header('Authorization') String token,
   );
+
+  @GET('/courses/unpaid-courses')
+  Future<HttpResponse<dynamic>> getUnpaidCourses(
+      @Query('page') int page,
+      @Query('cateID') int cateId,
+      );
 }
