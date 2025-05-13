@@ -25,6 +25,8 @@ class StripeCheckoutViewSet(viewsets.ViewSet):
             course = Course.objects.get(id=pk)
             amount = course.price  # giá (tính bằng cents)
             user_id = request.user.id
+            device_token = request.data.get('device_token')
+
 
             # Kiểm tra xem thanh toán cho khóa học này đã tồn tại hay chưa
             payment_exists = Payment.objects.filter(user_id=user_id, course_id=pk, status=True).exists()
@@ -54,6 +56,7 @@ class StripeCheckoutViewSet(viewsets.ViewSet):
                 metadata={
                     'course_id': course.id,
                     'user_id': user_id,
+                    'device_token': device_token
                 }
             )
 
@@ -87,6 +90,7 @@ def stripe_webhook(request):
         # Lấy metadata
         course_id = session['metadata'].get('course_id')
         user_id = session['metadata'].get('user_id')
+        device_token = session['metadata'].get('device_token')  # Lấy device_token từ metadata
 
         # Tìm user và course từ database
         user = User.objects.get(id=user_id)
@@ -98,10 +102,10 @@ def stripe_webhook(request):
             course=course,
             status=True
         )
-        device_tokens = DeviceToken.objects.filter(user=user).values_list('token', flat=True)
-        for token in device_tokens:
-            send_delayed_push_notification.delay(token, "Thanh toán thành công",
-                                                 f"Bạn đã đăng ký thành công khóa học {course.name}!")
 
+        if device_token:
+            # Chỉ gửi thông báo cho token này
+            send_delayed_push_notification.delay(device_token, "Thanh toán thành công",
+                                                 f"Bạn đã đăng ký thành công khóa học {course.name}!")
 
     return JsonResponse({'status': 'success'})

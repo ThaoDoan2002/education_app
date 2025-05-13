@@ -90,7 +90,7 @@ class Payment(BaseModel):
 
 class DeviceToken(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    token = models.CharField(max_length=255, unique=True)
+    token = models.CharField(max_length=255)
     platform = models.CharField(max_length=10, choices=[('android', 'Android'), ('ios', 'iOS')])
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

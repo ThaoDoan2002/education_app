@@ -98,7 +98,6 @@ def send_delayed_push_notification(token, title, body):
         response = messaging.send(message)
         print(f"Push sent to {token}: {response}")
     except UnregisteredError:
-        # Token không còn tồn tại hoặc đã bị thu hồi → xóa khỏi DB
         DeviceToken.objects.filter(token=token).delete()
         print(f"Token không hợp lệ, đã xóa: {token}")
     except Exception as e:
