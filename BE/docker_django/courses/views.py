@@ -540,7 +540,7 @@ class TextToSpeechViewSet(viewsets.ViewSet):
     def synthesize(self, request):
         text = request.GET.get("text", "Hello from Google Cloud TTS!")
 
-        # Lấy tham số gender từ query string, mặc định NEUTRAL
+        # Lấy giới tính
         gender_str = request.GET.get("gender", "neutral").lower()
         if gender_str == "male":
             gender = texttospeech.SsmlVoiceGender.MALE
@@ -548,6 +548,9 @@ class TextToSpeechViewSet(viewsets.ViewSet):
             gender = texttospeech.SsmlVoiceGender.FEMALE
         else:
             gender = texttospeech.SsmlVoiceGender.NEUTRAL
+
+        # Lấy tốc độ nói (nếu không có thì mặc định là 1.0)
+        speaking_rate = float(request.GET.get("speaking_rate", 1.0))
 
         client = texttospeech.TextToSpeechClient()
         synthesis_input = texttospeech.SynthesisInput(text=text)
@@ -557,7 +560,10 @@ class TextToSpeechViewSet(viewsets.ViewSet):
             ssml_gender=gender,
         )
 
-        audio_config = texttospeech.AudioConfig(audio_encoding=texttospeech.AudioEncoding.MP3)
+        audio_config = texttospeech.AudioConfig(
+            audio_encoding=texttospeech.AudioEncoding.MP3,
+            speaking_rate=speaking_rate  # 👈 thêm dòng này
+        )
 
         response = client.synthesize_speech(
             input=synthesis_input,
