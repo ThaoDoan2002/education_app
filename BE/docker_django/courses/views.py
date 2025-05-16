@@ -26,14 +26,15 @@ from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
 from rest_framework.permissions import IsAuthenticated
 import requests
-from rest_framework.views import APIView
 import random
 
 from . import perms
 from .models import Category, Course, Lesson, User, Video, Payment, DeviceToken, Note, EmailOTP
 from .serializers import VideoSerializer, CourseSerializer, DeviceTokenSerializer, LessonSerializer, NoteSerializer, \
     RegisterSerializer
-
+from google.cloud import texttospeech
+from django.http import HttpResponse
+import os
 
 class CategoryViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView):
     queryset = Category.objects.all()
@@ -531,3 +532,29 @@ def successed(request):
 
 def cancelled(request):
     return render(request, 'payment_cancelled.html')
+
+
+class TextToSpeechViewSet(viewsets.ViewSet):
+
+    @action(detail=False, methods=['get'])
+    def synthesize(self, request):
+        text = request.GET.get("text", "Hello from Google Cloud TTS!")
+
+        client = texttospeech.TextToSpeechClient()
+        synthesis_input = texttospeech.SynthesisInput(text=text)
+
+        voice = texttospeech.VoiceSelectionParams(
+            language_code="en-US",
+            ssml_gender=texttospeech.SsmlVoiceGender.NEUTRAL
+        )
+
+        audio_config = texttospeech.AudioConfig(audio_encoding=texttospeech.AudioEncoding.MP3)
+
+        response = client.synthesize_speech(
+            input=synthesis_input,
+            voice=voice,
+            audio_config=audio_config
+        )
+
+        # Trả về HttpResponse chứa audio mp3
+        return HttpResponse(response.audio_content, content_type="audio/mpeg")

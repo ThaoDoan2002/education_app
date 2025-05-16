@@ -28,6 +28,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(os.environ.get("DEBUG", default=0))
+
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "127.0.0.1").split(",")
 # Application definition
 MY_HOST="http://thaoit.ddns.net"
@@ -369,6 +370,8 @@ JAZZMIN_UI_TWEAKS = {
 
 firebase_cred_path = os.path.join(BASE_DIR,'courseapp', 'firebase', 'firebase-adminsdk.json')
 
+# Đặt biến môi trường trước
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = firebase_cred_path
 if not firebase_admin._apps:
     cred = credentials.Certificate(firebase_cred_path)
     firebase_admin.initialize_app(cred)

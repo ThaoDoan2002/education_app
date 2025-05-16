@@ -20,6 +20,8 @@ router.register('notes', views.NoteViewSet, basename='notes')
 router.register('send-otp', views.SendOtpView, basename='send-otp')
 router.register('verify-otp', views.VerifyOtpView, basename='verify-otp')
 router.register('register-info', views.RegisterView, basename='register-info')
+router.register('tts', views.TextToSpeechViewSet, basename='tts')
+
 
 
 
