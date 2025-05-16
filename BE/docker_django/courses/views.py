@@ -540,12 +540,21 @@ class TextToSpeechViewSet(viewsets.ViewSet):
     def synthesize(self, request):
         text = request.GET.get("text", "Hello from Google Cloud TTS!")
 
+        # Lấy tham số gender từ query string, mặc định NEUTRAL
+        gender_str = request.GET.get("gender", "neutral").lower()
+        if gender_str == "male":
+            gender = texttospeech.SsmlVoiceGender.MALE
+        elif gender_str == "female":
+            gender = texttospeech.SsmlVoiceGender.FEMALE
+        else:
+            gender = texttospeech.SsmlVoiceGender.NEUTRAL
+
         client = texttospeech.TextToSpeechClient()
         synthesis_input = texttospeech.SynthesisInput(text=text)
 
         voice = texttospeech.VoiceSelectionParams(
             language_code="en-US",
-            ssml_gender=texttospeech.SsmlVoiceGender.NEUTRAL
+            ssml_gender=gender,
         )
 
         audio_config = texttospeech.AudioConfig(audio_encoding=texttospeech.AudioEncoding.MP3)
@@ -556,5 +565,4 @@ class TextToSpeechViewSet(viewsets.ViewSet):
             audio_config=audio_config
         )
 
-        # Trả về HttpResponse chứa audio mp3
         return HttpResponse(response.audio_content, content_type="audio/mpeg")
