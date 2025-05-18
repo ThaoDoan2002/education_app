@@ -30,8 +30,9 @@ import random
 
 from . import perms
 from .models import Category, Course, Lesson, User, Video, Payment, DeviceToken, Note, EmailOTP
+from .paginators import CoursePaginator
 from .serializers import VideoSerializer, CourseSerializer, DeviceTokenSerializer, LessonSerializer, NoteSerializer, \
-    RegisterSerializer
+    RegisterSerializer, UpdateUserInfoSerializer
 from google.cloud import texttospeech
 from django.http import HttpResponse
 import os
@@ -48,26 +49,22 @@ class CategoryViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveA
     @action(detail=True, methods=['get'], url_path='courses')
     def courses_by_category(self, request, pk=None):
         try:
-            category = self.get_object()  # Lấy Category theo pk
-            user = request.user  # Lấy user hiện tại từ request
+            category = self.get_object()
+            user = request.user
 
-            # Lọc ra khoá học trong category
             courses = Course.objects.filter(category=category)
 
-            # Lọc khoá học mà người dùng chưa thanh toán (trong Payment)
             unpaid_courses = []
-
             for course in courses:
-                # Kiểm tra xem người dùng đã thanh toán chưa cho khoá học này
                 payment = Payment.objects.filter(user=user, course=course).first()
-
-                if not payment or payment.status == False:  # Nếu chưa thanh toán hoặc thanh toán thất bại
+                if not payment or payment.status is False:
                     unpaid_courses.append(course)
 
-            # Serialize lại danh sách khoá học chưa thanh toán
-            serializer = CourseSerializer(unpaid_courses, many=True, context={'request': request})
+            paginator = CoursePaginator()
+            page = paginator.paginate_queryset(unpaid_courses, request)
 
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            serializer = CourseSerializer(page, many=True, context={'request': request})
+            return paginator.get_paginated_response(serializer.data)
 
         except Category.DoesNotExist:
             return Response({'error': 'Category không tồn tại'}, status=status.HTTP_404_NOT_FOUND)
@@ -198,7 +195,7 @@ class UserViewSet(viewsets.ViewSet, generics.CreateAPIView):
     parser_classes = [parsers.MultiPartParser]
 
     def get_permissions(self):
-        if self.action.__eq__('current_user') | self.action.__eq__('edit'):
+        if self.action.__eq__('current_user') | self.action.__eq__('edit_avatar')| self.action.__eq__('update_info'):
             return [permissions.IsAuthenticated()]
         return [permissions.AllowAny()]
 
@@ -248,12 +245,29 @@ class UserViewSet(viewsets.ViewSet, generics.CreateAPIView):
         except Exception as e:
             return Response({'error': str(e)}, status=400)
 
+    @action(methods=["patch"], detail=False, url_path='update-info')
+    def update_info(self, request):
+        user = request.user
+        data = {
+            "first_name": request.data.get("firstName"),
+            "last_name": request.data.get("lastName"),
+            "phone": request.data.get("phone"),
+        }
+
+        serializer = UpdateUserInfoSerializer(user, data=data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "Thông tin đã được cập nhật", "user": serializer.data},
+                            status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
     @action(methods=['get'], url_name='current-users', detail=False)
     def current_user(self, request):
         return Response(serializers.UserSerializer(request.user).data)
 
-    @action(methods=['patch'], url_name='edit-user', detail=False)
-    def edit(self, request):
+    @action(methods=['patch'], url_name='edit-avatar', detail=False)
+    def edit_avatar(self, request):
         user = request.user
 
         avatar = request.FILES.get('avatar')

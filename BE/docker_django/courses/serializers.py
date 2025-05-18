@@ -84,6 +84,12 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
 
+class UpdateUserInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'phone']
+
+
 class PaymentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Payment
