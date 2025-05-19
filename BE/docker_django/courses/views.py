@@ -37,7 +37,7 @@ from google.cloud import texttospeech
 from django.http import HttpResponse
 import os
 
-from .tasks import send_welcome_email_task
+from .tasks import send_welcome_email_task, send_payment_success_email
 
 
 class CategoryViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView):
@@ -142,15 +142,16 @@ class CourseViewSet(viewsets.ViewSet, generics.ListAPIView, generics.CreateAPIVi
             print(e)
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
+
     @action(detail=False, methods=['get'], url_path='unpaid-courses')
     def unpaid_courses(self, request):
         user = request.user
         search_query = request.query_params.get('search', '')
 
-        # Lọc các khoá học người dùng **chưa thanh toán**
+        # Lấy danh sách các khoá học đã thanh toán
         paid_courses = Payment.objects.filter(user=user, status=True).values_list('course_id', flat=True)
 
-        # Lọc khoá học chưa thanh toán, active và theo từ khoá tìm kiếm
+        # Lọc các khoá học chưa thanh toán
         unpaid_courses = Course.objects.filter(
             active=True
         ).exclude(id__in=paid_courses)
@@ -158,13 +159,10 @@ class CourseViewSet(viewsets.ViewSet, generics.ListAPIView, generics.CreateAPIVi
         if search_query:
             unpaid_courses = unpaid_courses.filter(name__icontains=search_query)
 
-        # Thực hiện phân trang
-        paginator = self.pagination_class()
-        paginated_courses = paginator.paginate_queryset(unpaid_courses, request)
-        serializer = self.get_serializer(paginated_courses, many=True, context={'request': request})
+        # Serialize tất cả kết quả (không phân trang)
+        serializer = self.get_serializer(unpaid_courses, many=True, context={'request': request})
 
-        # Trả về kết quả phân trang
-        return paginator.get_paginated_response(serializer.data)
+        return Response(serializer.data)
 
 
 class LessonViewSet(viewsets.ViewSet, generics.RetrieveAPIView):
