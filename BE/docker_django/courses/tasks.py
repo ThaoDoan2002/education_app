@@ -63,7 +63,7 @@ def send_payment_success_email(user_id, course_id):
             'course_url': f'https://tenmiencuaban.com/courses/{course.id}/'
         }
 
-        html_content = render_to_string('emails/payment_success_email.html', context)
+        html_content = render_to_string('emails/payment_successful.html', context)
         text_content = strip_tags(html_content)
 
         msg = EmailMultiAlternatives(subject, text_content, from_email, to_email)
