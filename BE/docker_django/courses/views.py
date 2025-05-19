@@ -63,11 +63,8 @@ class CategoryViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveA
                 if not payment or payment.status is False:
                     unpaid_courses.append(course)
 
-            paginator = CoursePaginator()
-            page = paginator.paginate_queryset(unpaid_courses, request)
-
-            serializer = CourseSerializer(page, many=True, context={'request': request})
-            return paginator.get_paginated_response(serializer.data)
+            serializer = CourseSerializer(unpaid_courses, many=True, context={'request': request})
+            return Response(serializer.data)
 
         except Category.DoesNotExist:
             return Response({'error': 'Category không tồn tại'}, status=status.HTTP_404_NOT_FOUND)
