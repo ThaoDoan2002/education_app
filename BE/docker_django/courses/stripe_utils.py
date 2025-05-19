@@ -1,3 +1,5 @@
+from distutils.command.config import config
+
 import stripe
 from django.conf import settings
 from django.http import JsonResponse
@@ -6,14 +8,14 @@ from rest_framework import viewsets, status, permissions
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from .tasks import send_delayed_push_notification
+from .tasks import send_delayed_push_notification, send_payment_success_email
 
 from .models import Course, Payment, User, DeviceToken
 from .perms import IsPaymentGranted
 
 # Cấu hình Stripe API key
 stripe.api_key = settings.STRIPE_SECRET_KEY
-host = settings.MY_HOST
+host = settings.HOST
 
 
 class StripeCheckoutViewSet(viewsets.ViewSet):
@@ -107,5 +109,6 @@ def stripe_webhook(request):
             # Chỉ gửi thông báo cho token này
             send_delayed_push_notification.delay(device_token, "Thanh toán thành công",
                                                  f"Bạn đã đăng ký thành công khóa học {course.name}!")
+            send_payment_success_email(user_id, course_id)
 
     return JsonResponse({'status': 'success'})

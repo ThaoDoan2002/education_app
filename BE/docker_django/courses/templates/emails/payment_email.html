@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Thanh toán thành công</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <style>
+    body {
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: #f4f4f7;
+      margin: 0;
+      padding: 0;
+    }
+
+    .email-container {
+      max-width: 600px;
+      margin: 40px auto;
+      background-color: #ffffff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .email-header {
+      background-color: #16a34a;
+      color: #ffffff;
+      padding: 24px;
+      text-align: center;
+    }
+
+    .email-body {
+      padding: 30px;
+      color: #333333;
+    }
+
+    .email-footer {
+      padding: 20px;
+      font-size: 13px;
+      color: #888;
+      text-align: center;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 12px 20px;
+      background-color: #16a34a;
+      color: white;
+      border-radius: 5px;
+      text-decoration: none;
+      margin-top: 20px;
+    }
+
+    @media only screen and (max-width: 600px) {
+      .email-body, .email-header, .email-footer {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="email-container">
+    <div class="email-header">
+      <h1>Thanh toán thành công!</h1>
+    </div>
+    <div class="email-body">
+      <p>Chào {{ user.first_name|default:"bạn" }},</p>
+      <p>Cảm ơn bạn đã đăng ký khoá học <strong>{{ course.name }}</strong>.</p>
+      <p>Chúng tôi đã nhận được thanh toán của bạn và bạn đã có toàn quyền truy cập vào khoá học này.</p>
+      <a href="{{ course_url }}" class="btn">Truy cập khoá học</a>
+    </div>
+    <div class="email-footer">
+      © 2025 Hệ thống học trực tuyến. Mọi quyền được bảo lưu.
+    </div>
+  </div>
+
+</body>
+</html>

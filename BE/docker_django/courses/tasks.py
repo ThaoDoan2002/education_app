@@ -1,11 +1,10 @@
 from datetime import datetime
 import os
 
-from celery import shared_task
 import boto3
 from django.core.mail import send_mail
 
-from courses.models import Video, User, DeviceToken
+from courses.models import Video, User, DeviceToken, Course
 import time
 
 from django.conf import settings
@@ -13,6 +12,66 @@ from firebase_admin import messaging
 from firebase_admin._messaging_utils import UnregisteredError
 
 
+from celery import shared_task
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
+from django.contrib.auth import get_user_model
+import logging
+
+logger = logging.getLogger(__name__)
+
+@shared_task
+def send_welcome_email_task(user_id):
+    User = get_user_model()
+    try:
+        user = User.objects.get(id=user_id)
+        subject = 'Chào mừng bạn đến với hệ thống'
+        from_email = 'StarLight <doanthithao20022003@gmail.com>'
+        to_email = [user.email]
+
+        context = {
+            'user': user,
+            'website_url': 'http://thaoit.ddns.net'
+        }
+
+        html_content = render_to_string('emails/welcome_email.html', context)
+        text_content = strip_tags(html_content)
+
+        msg = EmailMultiAlternatives(subject, text_content, from_email, to_email)
+        msg.attach_alternative(html_content, "text/html")
+        msg.send()
+
+    except Exception as e:
+        logger.error(f"Lỗi khi gửi email chào mừng: {e}")
+
+
+@shared_task
+def send_payment_success_email(user_id, course_id):
+    User = get_user_model()
+    try:
+        user = User.objects.get(id=user_id)
+        course = Course.objects.get(id=course_id)
+
+        subject = 'Xác nhận thanh toán khoá học'
+        from_email = 'StarLight <doanthithao20022003@gmail.com>'
+        to_email = [user.email]
+
+        context = {
+            'user': user,
+            'course': course,
+            'course_url': f'https://tenmiencuaban.com/courses/{course.id}/'
+        }
+
+        html_content = render_to_string('emails/payment_success_email.html', context)
+        text_content = strip_tags(html_content)
+
+        msg = EmailMultiAlternatives(subject, text_content, from_email, to_email)
+        msg.attach_alternative(html_content, "text/html")
+        msg.send()
+
+    except Exception as e:
+        logger.error(f"Lỗi khi gửi email thanh toán thành công: {e}")
 
 
 @shared_task
@@ -72,16 +131,6 @@ def upload_video_to_s3(file_path, filename, video_instance_id):
 
     except Exception as e:
         print(f"An error occurred: {e}")
-
-
-@shared_task
-def send_payment_success_email(user_id, course_name):
-    user = User.objects.get(id=user_id)
-    subject = f"Thanh toán thành công cho khóa học {course_name}"
-    message = f"Chào {user.username},\n\nBạn đã thanh toán thành công cho khóa học {course_name}. Chúc bạn học tốt!"
-    from_email = settings.EMAIL_HOST_USER
-
-    send_mail(subject, message, from_email, [user.email])
 
 
 @shared_task

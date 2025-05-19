@@ -37,6 +37,9 @@ from google.cloud import texttospeech
 from django.http import HttpResponse
 import os
 
+from .tasks import send_welcome_email_task
+
+
 class CategoryViewSet(viewsets.ViewSet, generics.ListAPIView, generics.RetrieveAPIView):
     queryset = Category.objects.all()
     serializer_class = serializers.CategorySerializer
@@ -535,7 +538,8 @@ class RegisterView(viewsets.ViewSet):
     def create(self, request):
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            user = serializer.save()
+            send_welcome_email_task(user.email)  # giả sử bạn truyền email
             return Response({"message": "Đăng ký thành công!"})
         return Response(serializer.errors, status=400)
 
@@ -586,3 +590,5 @@ class TextToSpeechViewSet(viewsets.ViewSet):
         )
 
         return HttpResponse(response.audio_content, content_type="audio/mpeg")
+
+

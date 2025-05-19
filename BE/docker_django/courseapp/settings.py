@@ -243,8 +243,7 @@ EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
 
 # Default email address to send from
 DEFAULT_FROM_EMAIL = 'doanthithao20022003@gmail.com'
-# Admin email for notifications
-ADMIN_EMAIL = '2151013090thao@ou.edu.vn'  # Thay bằng email của admin
+
 
 JAZZMIN_SETTINGS = {
     # title of the window (Will default to current_admin_site.site_title if absent or None)
