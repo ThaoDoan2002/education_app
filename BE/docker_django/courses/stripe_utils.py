@@ -15,7 +15,7 @@ from .perms import IsPaymentGranted
 
 # Cấu hình Stripe API key
 stripe.api_key = settings.STRIPE_SECRET_KEY
-host = settings.HOST
+host = settings.MY_HOST
 
 
 class StripeCheckoutViewSet(viewsets.ViewSet):
