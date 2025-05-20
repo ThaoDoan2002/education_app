@@ -259,12 +259,11 @@ class UserViewSet(viewsets.ViewSet, generics.CreateAPIView):
                             status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
     @action(methods=['get'], url_name='current-users', detail=False)
     def current_user(self, request):
         return Response(serializers.UserSerializer(request.user).data)
 
-    @action(methods=['patch'], url_name='edit-avatar', detail=False)
+    @action(methods=['patch'], url_path='edit-avatar', detail=False)
     def edit_avatar(self, request):
         user = request.user
 
