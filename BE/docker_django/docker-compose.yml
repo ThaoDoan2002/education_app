@@ -43,6 +43,8 @@ services:
       - .env.prod
     volumes:
       - ./temp_dir:/app/temp_dir
+    restart: always
+
 
 volumes:
   mysql_data:
