@@ -193,7 +193,7 @@ class UserViewSet(viewsets.ViewSet, generics.CreateAPIView):
     parser_classes = [parsers.MultiPartParser]
 
     def get_permissions(self):
-        if self.action.__eq__('current_user') | self.action.__eq__('edit_avatar')| self.action.__eq__('update_info'):
+        if self.action in ['current_user', 'edit_avatar', 'update_info']:
             return [permissions.IsAuthenticated()]
         return [permissions.AllowAny()]
 
