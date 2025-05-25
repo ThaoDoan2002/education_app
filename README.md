@@ -38,8 +38,6 @@ git clone https://github.com/yourusername/education_app.git
 
 # Run with Docker
 docker-compose up --build
-🔍 Demo
-Backend: http://thaoit.ddns.net
 
 🔗 Default Admin:
 http://localhost:8000/admin/
