@@ -47,7 +47,7 @@ Frontend (Flutter)
 flutter pub get
 flutter run
 
-📸 Screenshots
+# Screenshots
 #### 📘 1. Home Page
 ![Home](demo/sl1.jpeg)
 
