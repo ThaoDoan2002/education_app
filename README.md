@@ -49,7 +49,7 @@ flutter run
 
 📸 Screenshots
 #### 📘 1. Home Page
-![Home](demo/sl1.jpg)
+![Home](demo/sl1.jpeg)
 
 
 
