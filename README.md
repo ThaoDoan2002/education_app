@@ -82,15 +82,17 @@ flutter run
     <td><img src="demo/payment.png" alt="Payment" width="300"/></td>
     <td><img src="demo/gemini.png" alt="Gemini" width="300"/></td>
   </tr>
-      <tr>
-    <td><strong>📘 Text to Speech Screen</strong></td>
+  <tr>
+  <td><strong>📘 Text to Speech Demo</strong></td>
   </tr>
   <tr>
-    <video width="300" controls>
-      <source src="demo/tts.mov" type="video/quicktime">
-      Your browser does not support the video tag.
-    </video>
-</tr>
+    <td>
+      <video width="300" controls>
+        <source src="demo/tts.mov" type="video/quicktime">
+        Your browser does not support the video tag.
+      </video>
+    </td>
+  </tr>
 </table>
 
 
