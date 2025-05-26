@@ -86,8 +86,11 @@ flutter run
     <td><strong>📘 Text to Speech Screen</strong></td>
   </tr>
   <tr>
-    <td><img src="demo/payment.png" alt="TTS" width="300"/></td>
-  </tr>
+    <video width="300" controls>
+      <source src="demo/payment.mov" type="video/quicktime">
+      Your browser does not support the video tag.
+    </video>
+</tr>
 </table>
 
 
