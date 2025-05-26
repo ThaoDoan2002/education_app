@@ -48,14 +48,24 @@ flutter pub get
 flutter run
 
 # Screenshots
-#### 📘 1. Welcome Screen
-<img src="welcome.png" alt="demo" style="width: 400px;"/>
-#### 📘 2. Login Screen
-![Login](demo/login.png)
-#### 📘 3. Home Screen
-![Home](demo/home.png)
-#### 📘 3. Courses Screen
-![Courses](demo/courses.png)
 
+<table>
+  <tr>
+    <td><strong>📘 Welcome Screen</strong></td>
+    <td><strong>📘 Login Screen</strong></td>
+  </tr>
+  <tr>
+    <td><img src="demo/welcome.png" alt="Welcome" width="300"/></td>
+    <td><img src="demo/login.png" alt="Login" width="300"/></td>
+  </tr>
+  <tr>
+    <td><strong>📘 Home Screen</strong></td>
+    <td><strong>📘 Courses Screen</strong></td>
+  </tr>
+  <tr>
+    <td><img src="demo/home.png" alt="Home" width="300"/></td>
+    <td><img src="demo/courses.png" alt="Courses" width="300"/></td>
+  </tr>
+</table>
 
 
