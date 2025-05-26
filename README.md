@@ -1,7 +1,7 @@
 📚 English Learning App
 A full-stack English learning platform built with Flutter and Django, designed to help users study English effectively through video lessons, AI support, and interactive learning features.
 
-🚀 Features
+# Feature
 ✅ User registration with Google OAuth2
 
 🔐 Password reset via Firebase Dynamic Links
