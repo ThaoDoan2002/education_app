@@ -66,13 +66,27 @@ flutter run
     <td><img src="demo/home.png" alt="Home" width="300"/></td>
     <td><img src="demo/courses.png" alt="Courses" width="300"/></td>
   </tr>
-    <tr>
+  <tr>
     <td><strong>📘 Lessons Screen</strong></td>
     <td><strong>📘 Watch Video Screen</strong></td>
   </tr>
   <tr>
-    <td><img src="demo/lessons.png" alt="Lessons" width="300"/></td>
-    <td><img src="demo/watch.png" alt="Video" width="300"/></td>
+    <td><img src="demo/lesson.png" alt="Lessons" width="300"/></td>
+    <td><img src="demo/watchvideo.png" alt="Video" width="300"/></td>
+  </tr>
+  <tr>
+    <td><strong>📘 Payment Screen</strong></td>
+    <td><strong>📘 Gemini Chat Screen</strong></td>
+  </tr>
+  <tr>
+    <td><img src="demo/payment.png" alt="Payment" width="300"/></td>
+    <td><img src="demo/gemini.png" alt="Gemini" width="300"/></td>
+  </tr>
+      <tr>
+    <td><strong>📘 Text to Speech Screen</strong></td>
+  </tr>
+  <tr>
+    <td><img src="demo/payment.png" alt="TTS" width="300"/></td>
   </tr>
 </table>
 
