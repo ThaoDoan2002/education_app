@@ -5,12 +5,11 @@ import 'package:education_project/config/storage/token_storage.dart';
 import 'package:education_project/core/constants/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../../../../core/utils/injection_container.dart';
 import '../../../home/presentation/provider/get_user_provider.dart';
+
 
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
@@ -33,7 +32,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       final token = await TokenStorage().getAccessToken();
 
       final response = await dio.patch(
-        '$BASE_URL/users/edit/', // thay bằng URL thực tế
+        '$BASE_URL/users/edit-avatar/', // thay bằng URL thực tế
         data: formData,
         options: Options(
           headers: {
@@ -86,7 +85,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         centerTitle: true,
-        title: const Text('Tài khoản'),
+        title: const Text('Tài khoản', style: TextStyle(fontWeight: FontWeight.bold),),
         backgroundColor: Colors.white,
         surfaceTintColor: Colors.white,
       ),
@@ -164,6 +163,19 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                             style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                           ),
                           Text(user?.email ?? 'Chưa có email'),
+                          const SizedBox(height: 12),
+                          ElevatedButton.icon(
+                            onPressed: () {
+                              context.push('/edit-profile');
+                            },
+                            icon: const Icon(Icons.edit, size: 18),
+                            label: const Text('Sửa thông tin'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.green,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                            ),
+                          ),
                         ],
                       ),
                     ),

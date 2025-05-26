@@ -20,8 +20,8 @@ abstract class CoursesApiService {
 
   @GET('/categories/{id}/courses/')
   Future<HttpResponse<dynamic>> getCoursesByCate(
-    @Path('id') int cateId,
-  );
+      @Path('id') int cateId,
+      );
 
   @GET('/courses/unpaid-courses')
   Future<HttpResponse<dynamic>> getUnpaidCourses(

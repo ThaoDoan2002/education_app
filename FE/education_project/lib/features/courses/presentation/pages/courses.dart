@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:education_project/features/home/presentation/provider/get_cates_provider.dart';
 import 'package:education_project/features/home/presentation/provider/get_courses_by_cate_provider.dart';
 import 'package:flutter/material.dart';
@@ -113,12 +114,18 @@ class _CoursesScreenState extends ConsumerState<CoursesScreen> {
                                               borderRadius:
                                               const BorderRadius.vertical(
                                                   top: Radius.circular(16)),
-                                              child: Image.network(
-                                                '$CLOUDINARY_URL${course.thumbnail}' ??
-                                                    '',
+                                              child: CachedNetworkImage(
+                                                imageUrl: '$CLOUDINARY_URL${course.thumbnail ?? ''}',
                                                 height: 150,
                                                 width: double.infinity,
                                                 fit: BoxFit.cover,
+                                                placeholder: (context, url) => Center(child: CircularProgressIndicator()),
+                                                errorWidget: (context, url, error) => Image.asset(
+                                                  'assets/home/default_course.png', // Ảnh fallback nếu lỗi
+                                                  height: 150,
+                                                  width: double.infinity,
+                                                  fit: BoxFit.cover,
+                                                ),
                                               ),
                                             ),
                                             Padding(

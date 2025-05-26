@@ -47,7 +47,7 @@ class _HomeState extends ConsumerState<Home> {
 
   @override
   Widget build(BuildContext context) {
-    final user = ref.read(userProvider);
+    final user = ref.watch(userProvider);
     final cateById = ref.watch(categoryProvider(selectedID));
     final courses = ref.watch(coursesOwnByCateProvider(selectedID));
     return Scaffold(
@@ -216,7 +216,7 @@ class _HomeState extends ConsumerState<Home> {
                           ),
                           ElevatedButton(
                             onPressed: () {
-                              context.push('/my_courses?id=${selectedID}');
+                              context.push('/tts');
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.white,
@@ -225,15 +225,15 @@ class _HomeState extends ConsumerState<Home> {
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               padding: const EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 20),
+                                  horizontal: 30, vertical: 20),
                             ),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: const [
-                                Icon(FontAwesomeIcons.graduationCap,
+                                Icon(FontAwesomeIcons.earListen,
                                     color: Colors.blue),
                                 SizedBox(width: 10),
-                                Text('Khoá học của tôi',
+                                Text('Luyện nghe',
                                     style: TextStyle(color: Colors.black)),
                               ],
                             ),

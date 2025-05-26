@@ -1,41 +1,56 @@
+import 'package:education_project/features/home/presentation/pages/home.dart';
+import 'package:education_project/features/profile/presentation/pages/profile.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 
-class MainLayout extends StatefulWidget {
-  final Widget child;
+import '../../features/bot_chat/bot_screen.dart';
 
-  const MainLayout({required this.child});
+class MainLayout extends StatefulWidget {
+  const MainLayout({super.key});
 
   @override
   _MainLayoutState createState() => _MainLayoutState();
 }
 
 class _MainLayoutState extends State<MainLayout> {
-  int _currentIndex = 0; // Biến trạng thái để theo dõi mục được chọn
+  int _currentIndex = 0;
+
+  final List<Widget> _screens = [
+    Home(),
+    BotScreen(),
+    ProfileScreen(),
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: widget.child,
+      body: IndexedStack(
+        index: _currentIndex,
+        children: _screens,
+      ),
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex, // Cập nhật màu sắc dựa trên chỉ mục
+        currentIndex: _currentIndex,
         selectedItemColor: Colors.blue,
         unselectedItemColor: Colors.black54,
         backgroundColor: Colors.white,
-        items: const [
-          BottomNavigationBarItem(icon: FaIcon(FontAwesomeIcons.houseUser), label: 'Trang chủ'),
-          BottomNavigationBarItem(icon: Icon(FontAwesomeIcons.book), label: 'Khoá học'),
-          BottomNavigationBarItem(icon: Icon(FontAwesomeIcons.user), label: 'Hồ sơ'),
+        items: [
+          const BottomNavigationBarItem(icon: FaIcon(FontAwesomeIcons.houseUser), label: 'Trang chủ'),
+          BottomNavigationBarItem(
+            icon: SvgPicture.asset(
+              'assets/icon/gemini.svg',
+              height: 24,
+              width: 24,
+            ),
+            label: 'Gemini',
+          ),
+          const BottomNavigationBarItem(icon: Icon(FontAwesomeIcons.user), label: 'Hồ sơ'),
         ],
         onTap: (index) {
           setState(() {
-            _currentIndex = index; // Cập nhật trạng thái chỉ mục khi nhấn
+            _currentIndex = index;
           });
-          // Chuyển hướng đến các trang tương ứng
-          if (index == 0) context.go('/home');
-          if (index == 1) context.go('/courses');
-          if (index == 2) context.go('/profile');
         },
       ),
     );

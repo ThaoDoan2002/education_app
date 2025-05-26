@@ -26,13 +26,11 @@ final tokenProvider = StateProvider<String?>((ref) => null);
 
 @Riverpod(keepAlive: true)
 Future<UserEntity?> user(Ref ref) async {
-  final token = ref.watch(tokenProvider); // Theo dõi token từ provider
-  if (token == null) {
-    throw Exception('No token found');
-  }
   final getUserUseCase = ref.read(getUserUseCaseProvider);
   final result = await getUserUseCase.call();
+  print(result);
   if (result is DataSuccess) {
+
     return result.data;
   } else {
     throw Exception('Failed to load user');

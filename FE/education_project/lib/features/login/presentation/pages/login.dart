@@ -2,6 +2,9 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:education_project/core/constants/constants.dart';
+import 'package:education_project/features/home/presentation/provider/get_courses_by_cate_provider.dart';
+import 'package:education_project/features/home/presentation/provider/get_own_course_by_cate_provider.dart';
+import 'package:education_project/features/home/presentation/provider/get_own_course_provider.dart';
 import 'package:education_project/features/login/presentation/provider/state/login_state.dart';
 import 'package:education_project/features/login/presentation/widgets/password_login_widget.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -80,7 +83,7 @@ class _LoginState extends ConsumerState<Login> {
           );
         }
       } catch (e) {
-        print('❌ Lỗi khi gửi device token: $e');
+        print('Lỗi khi gửi device token: $e');
       }
     }
 
@@ -115,9 +118,13 @@ class _LoginState extends ConsumerState<Login> {
       final loginState = ref.read(loginNotifierProvider);
       if (loginState is LoginDone) {
         errorMessage = '';
-        await _registerDeviceToken();
         final newToken = await TokenStorage().getAccessToken();
         ref.read(tokenProvider.notifier).state = newToken;
+        ref.invalidate(userProvider);
+        ref.invalidate(coursesOwnByCateProvider);
+        ref.invalidate(coursesByCateProvider);
+        await _registerDeviceToken();
+
         context.go('/home');
       } else if (loginState is LoginError) {
         setState(() {

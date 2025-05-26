@@ -14,12 +14,20 @@ class RoutePaths {
   static const video = '/video';
   static const profile = '/profile';
   static const my_courses = '/my_courses';
+  static const chat_bot = '/bot';
+  static const tts = '/tts';
+
+
 }
 
 class RouteNames {
-  static const resetPassword = 'reset-password';
-  static const checkout = 'checkout';
-  static const lessons = 'lessons';
-  static const video = 'video';
-  static const my_courses = '/my_courses';
+static const resetPassword = 'reset-password';
+static const checkout = 'checkout';
+static const lessons = 'lessons';
+static const video = 'video';
+static const my_courses = 'my_courses';
+static const chat_bot = 'bot';
+static const tts = 'tts';
+
+
 }

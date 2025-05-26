@@ -222,6 +222,7 @@ class _WelcomeState extends ConsumerState<Welcome> with SingleTickerProviderStat
 
                             if (idToken != null) {
                               final params = SocialLoginBodyParams(idToken: idToken);
+
                               await ref.read(socialLoginNotifierProvider.notifier).socialLogin(params);
                               final state = ref.read(socialLoginNotifierProvider);
                               print(state);

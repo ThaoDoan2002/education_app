@@ -56,7 +56,7 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text('Nhập Mã OTP', style: TextStyle(fontWeight: FontWeight.bold),),
+        title: Text('Nhập Mã OTP', style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),),
         backgroundColor: Colors.blue,  // Màu của AppBar
         elevation: 0,
       ),

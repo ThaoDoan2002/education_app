@@ -25,6 +25,7 @@ class AuthInterceptor extends Interceptor {
   void onError(DioException err, ErrorInterceptorHandler handler) async {
     if (err.response?.statusCode == 401) {
       final refreshToken = await storage.getRefreshToken();
+
       if (refreshToken != null) {
         try {
           final refreshResponse = await dio.post(

@@ -25,7 +25,7 @@ final getCourseByCateUseCaseProvider = Provider<GetCoursesByCateUseCase>((ref) {
 
 @Riverpod(keepAlive: true)
 Future<List<CourseEntity>?> coursesByCate(Ref ref, int id) async {
-  final userInfo = ref.watch(userProvider);
+  // final userInfo = ref.watch(userProvider);
   final getCoursesBycate = ref.read(getCourseByCateUseCaseProvider);
   final result = await getCoursesBycate.call(params:id);
   if (result is DataSuccess) {

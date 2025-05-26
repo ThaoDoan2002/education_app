@@ -1,4 +1,6 @@
 import 'package:education_project/config/routes/router_constant.dart';
+import 'package:education_project/features/bot_chat/bot_screen.dart';
+import 'package:education_project/features/text_to_speech/text_to_speech_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -12,6 +14,7 @@ import '../../features/lesson/domain/entities/lesson.dart';
 import '../../features/lesson/presentation/pages/lesson_screen.dart';
 import '../../features/login/presentation/pages/login.dart';
 import '../../features/my_courses/presentation/my_courses_screen.dart';
+import '../../features/profile/presentation/pages/edit-profile.dart';
 import '../../features/profile/presentation/pages/profile.dart';
 import '../../features/register/presentation/pages/email_screen.dart';
 import '../../features/register/presentation/pages/otp_screen.dart';
@@ -65,6 +68,7 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) {
         final url = state.uri.queryParameters['checkout_url'] ?? '';
         final id = state.uri.queryParameters['id'] ?? '';
+
         if (url.isEmpty || id.isEmpty) {
           return const Scaffold(
               body: Center(child: Text('Không có thông tin thanh toán')));
@@ -125,6 +129,14 @@ final GoRouter appRouter = GoRouter(
       },
     ),
     GoRoute(
+      path: '/tts',
+      builder: (context, state) => TextToSpeechScreen(),
+    ),
+    GoRoute(
+      path: RoutePaths.courses,
+      builder: (context, state) => const CoursesScreen(),
+    ),
+    GoRoute(
       path: '/register-info/:email',
       builder: (context, state) {
         final email = state.pathParameters['email']!;
@@ -134,21 +146,27 @@ final GoRouter appRouter = GoRouter(
 
     // ShellRoute cho các trang chính
     ShellRoute(
-      builder: (context, state, child) => MainLayout(child: child),
+      builder: (context, state, child) => MainLayout(),
       routes: [
         GoRoute(
           path: RoutePaths.home,
           builder: (context, state) => const Home(),
         ),
+
         GoRoute(
-          path: RoutePaths.courses,
-          builder: (context, state) => const CoursesScreen(),
-        ),
+            path: RoutePaths.chat_bot,
+            builder: (context, state) => const BotScreen()),
         GoRoute(
           path: RoutePaths.profile,
           builder: (context, state) => const ProfileScreen(),
         ),
       ],
     ),
+    GoRoute(
+      path: '/edit-profile',
+      builder: (context, state) => const EditUserInfoScreen(),
+    ),
+
+
   ],
 );

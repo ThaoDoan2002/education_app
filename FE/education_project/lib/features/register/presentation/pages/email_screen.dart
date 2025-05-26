@@ -59,7 +59,7 @@ class _EmailInputPageState extends State<EmailInputPage> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text('Nhập Email', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text('Nhập Email', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
         backgroundColor: Colors.blue,  // Màu xanh cho AppBar
         elevation: 0,
       ),

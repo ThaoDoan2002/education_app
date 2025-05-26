@@ -20,7 +20,6 @@ class UserInfoRepositoryImpl implements UserInfoRepository {
   @override
   Future<DataState<UserEntity>> getUser() async{
     try {
-
       final httpResponse = await _userInfoApiService.getUser();
       if (httpResponse.response.statusCode == HttpStatus.ok) {
         final user = UserModel.fromJson(httpResponse.response.data);

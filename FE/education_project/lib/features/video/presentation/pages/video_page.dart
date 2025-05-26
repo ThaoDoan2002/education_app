@@ -3,14 +3,12 @@ import 'package:education_project/features/lesson/domain/entities/lesson.dart';
 import 'package:education_project/features/video/domain/entity/note.dart';
 import 'package:education_project/features/video/domain/entity/timeline.dart';
 import 'package:education_project/features/video/domain/entity/video.dart';
-import 'package:education_project/features/video/presentation/provider/state/note_state.dart';
 import 'package:flutter/material.dart';
 import 'package:chewie/chewie.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:video_player/video_player.dart';
 import 'package:lottie/lottie.dart';
 
-import '../../data/models/note.dart';
 import '../../domain/usecase/params/note_params.dart';
 import '../provider/note_provider.dart';
 
@@ -357,10 +355,10 @@ class CustomVideoControls extends ConsumerWidget {
       children: [
         const MaterialControls(), // Controls mặc định
         Positioned(
-          top: 2,
-          right: 24,
+          top: 0.5,
+          left: 1,
           child: IconButton(
-            icon: const Icon(Icons.note_add, color: Colors.white, size: 24),
+            icon: const Icon(Icons.note_add, color: Colors.white, size: 20),
             onPressed: () async {
               final currentTime = videoController.value.position.inSeconds;
 

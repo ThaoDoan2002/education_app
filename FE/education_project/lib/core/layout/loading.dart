@@ -27,7 +27,6 @@ class _LoadingState extends ConsumerState<Loading> {
       context.go('/welcome');
     }
   }
-
   @override
   void initState() {
     super.initState();
