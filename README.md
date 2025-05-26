@@ -49,7 +49,7 @@ flutter run
 
 # Screenshots
 #### 📘 1. Welcome Screen
-![Welcome](demo/welcome.png)
+<img src="welcome.png" alt="demo" style="width: 400px;"/>
 #### 📘 2. Login Screen
 ![Login](demo/login.png)
 #### 📘 3. Home Screen
