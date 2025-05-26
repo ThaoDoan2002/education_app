@@ -18,7 +18,7 @@ A full-stack English learning platform built with Flutter and Django, designed t
 
 🐳 Dockerized backend, deployed to VPS
 
-🛠️ Tech Stack
+# Tech Stack
 Layer	Technology
 Frontend	Flutter
 Backend	Django, Django REST framework
@@ -31,7 +31,7 @@ Queue Tasks	Celery, Redis
 Tools	Docker, Postman, Ngrok
 Deployment	Gunicorn on VPS
 
-🔧 How to Run (Local Setup)
+# How to Run (Local Setup)
 Backend (Django)
 # Clone the repo
 git clone https://github.com/yourusername/education_app.git
