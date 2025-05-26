@@ -48,8 +48,14 @@ flutter pub get
 flutter run
 
 # Screenshots
-#### 📘 1. Login Screen
-![Home](demo/login.jpeg)
+#### 📘 1. Welcome Screen
+![Welcome](demo/welcome.png)
+#### 📘 2. Login Screen
+![Login](demo/login.png)
+#### 📘 3. Home Screen
+![Home](demo/home.png)
+#### 📘 3. Courses Screen
+![Courses](demo/courses.png)
 
 
 
